@@ -1,0 +1,38 @@
+<div id="show-sidebar">
+  <button type="button" class="btn btn-light mb-5" (click)="openMenu()">
+    <fa-icon [icon]="['fas','bars']"></fa-icon>
+  </button>
+
+  <ul class="list-unstyled">    
+    <li class="mb-4">
+      <a [routerLink]="['/manager/project/', project_id, 'planning']" routerLinkActive="active">
+        <fa-icon [icon]="['fas','th-large']"></fa-icon>
+      </a>
+    </li>
+    <li class="mb-4">
+      <a [routerLink]="['/manager/project/', project_id, 'schedule']" routerLinkActive="active">
+        <fa-icon [icon]="['fas','folder-open']"></fa-icon>
+      </a>
+    </li>
+    <li class="mb-4">
+      <a [routerLink]="['/manager/project/', project_id, 'reports']" routerLinkActive="active">
+        <fa-icon [icon]="['fas','user-circle']"></fa-icon>
+      </a>
+    </li>
+    <li *ngIf="is_manager" class="mb-4">
+      <a [routerLink]="['/manager/project/', project_id, 'settings']" routerLinkActive="active">
+        <fa-icon [icon]="['fas','users']"></fa-icon>
+      </a>
+    </li>
+    <li *ngIf="project?.repository" class="mb-4">
+      <a href="{{project.repository}}" target="_blank">
+        <fa-icon [icon]="['fas','cloud']"></fa-icon>
+      </a>
+    </li>
+    <li>
+      <a [routerLink]="['/manager/projects']">
+        <fa-icon [icon]="['fas','arrow-left']"></fa-icon>
+      </a>
+    </li>
+  </ul>
+</div>

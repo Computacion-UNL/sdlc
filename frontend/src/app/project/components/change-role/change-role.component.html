@@ -1,0 +1,11 @@
+<fieldset [disabled]="loading">
+  <select 
+    [formControl]="control"
+    class="form-select"
+    (change)="updateRole()"
+  >
+    <ng-container *ngFor="let role of roles">
+      <option [value]="role._id">{{ role.name }}</option>
+    </ng-container>
+  </select>
+</fieldset>

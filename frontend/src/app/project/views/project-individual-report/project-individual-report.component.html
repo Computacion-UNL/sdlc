@@ -1,0 +1,134 @@
+<div class="project-individual-report">
+    <div class="project-individual-report-iteration mb-4">
+        <span>{{iteration?.name}}</span>
+        <div ngbDropdown [joyrideStep]="steps[0].step" [title]="steps[0].title" [text]="steps[0].text">
+            <button class="btn btn-primary" ngbDropdownToggle>
+                Exportar reporte
+            </button>
+            <div ngbDropdownMenu>
+                <button ngbDropdownItem (click)="exportToPDF()">PDF</button>
+                <button ngbDropdownItem (click)="exportToXLSX()">Excel (XLSX)</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="project-individual-report-border mb-4" [joyrideStep]="steps[1].step" [title]="steps[1].title"
+        [text]="steps[1].text">
+        <div class="row">
+            <div class="col-4 project-individual-report-header">
+                Actividades
+            </div>
+            <div class="col-3 project-individual-report-header">
+                Responsables
+            </div>
+            <div class="col project-individual-report-header">
+                Fecha Inicio
+            </div>
+            <div class="col project-individual-report-header">
+                Fecha Fin
+            </div>
+            <div class="col project-individual-report-header">
+                Estado
+            </div>
+            <div class="col project-individual-report-header">
+                Atraso
+            </div>
+        </div>
+        <hr class="project-individual-report-separator">
+        <div class="project-individual-report-body">
+            <div *ngFor="let activity of performed_activities"
+                class="row align-items-center project-individual-report-container-item">
+                <div class="col-4">{{activity.name}}</div>
+                <div *ngIf="activity.responsable.length === 0" class="col-3">
+                    Sin Responsables
+                </div>
+                <div *ngIf="activity.responsable.length > 0" class="col-3">
+                    <p *ngFor="let responsable of activity.responsable" class="mb-1">
+                        {{responsable.name}} {{responsable.lastname}}
+                    </p>
+                </div>
+                <div class="col">
+                    {{activity.start_date | date: "dd/MM/yyyy":"UTC"}}
+                </div>
+                <div class="col">
+                    {{activity.finish_date | date: "dd/MM/yyyy":"UTC"}}
+                </div>
+                <div class="col badge"
+                    [ngClass]="{'pending': activity.status === 'Por Hacer','develop': activity.status === 'En Curso','finish': activity.status === 'Finalizada'}">
+                    {{activity.status}}
+                </div>
+                <div *ngIf="delayActivity(activity.finish_date | date: 'MM/dd/yyyy':'UTC', activity.finish_real_date | date: 'MM/dd/yyyy':'UTC') > 0"
+                    class="col">
+                    {{delayActivity(activity.finish_date | date: 'MM/dd/yyyy':'UTC', activity.finish_real_date | date:
+                    'MM/dd/yyyy':'UTC')}} días
+                </div>
+                <div *ngIf="delayActivity(activity.finish_date | date: 'MM/dd/yyyy':'UTC', activity.finish_real_date | date: 'MM/dd/yyyy':'UTC') <= 0"
+                    class="col">
+                    Ninguno
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row project-individual-report-row justify-content-between mb-4">
+        <div class="col-lg-6 col-xl-5 mb-4 mb-lg-0">
+            <div class="project-individual-report-border" [joyrideStep]="steps[2].step"
+            [title]="steps[2].title" [text]="steps[2].text">
+                <h3 class="project-individual-report-header">Resumen General</h3>
+                <hr class="project-individual-report-separator">
+                <div class="row project-individual-report-container-item">
+                    <div class="col-8">Actividades Resueltas</div>
+                    <div class="col-4 badge">{{completed_activities}} actividades</div>
+                </div>
+                <div class="row project-individual-report-container-item">
+                    <div class="col-8">Actividades Sin Resolver</div>
+                    <div class="col-4 badge">{{incompleted_activities}} actividades</div>
+                </div>
+                <div class="row project-individual-report-container-item">
+                    <div class="col-8">Actividades con retraso</div>
+                    <div class="col-4 badge">{{delayed_activities}} actividad<span
+                            *ngIf="delayed_activities != 1">es</span></div>
+                </div>
+                <div class="row project-individual-report-container-item">
+                    <div class="col-8">Actividades Descartadas</div>
+                    <div class="col-4 badge">{{discard_activities.length}} actividad<span
+                            *ngIf="discard_activities.length > 1">es</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-xl-7 col-xs-12">
+            <div class=" project-individual-report-border h-100" [joyrideStep]="steps[3].step" [title]="steps[3].title"
+                [text]="steps[3].text">
+                <h3 class="project-individual-report-header">Actividades Descartadas</h3>
+                <hr class="project-individual-report-separator">
+                <div class="project-individual-report-body">
+                    <div *ngFor="let activity of discard_activities"
+                        class="row project-individual-report-container-item">
+                        <div class="col-7">
+                            {{activity.name}}
+                        </div>
+                        <div class="col-3">
+                            {{activity.finish_date | date: "dd/MM/yyyy"}}
+                        </div>
+                        <div class="col-2">
+                            <button class="btn project-individual-report__btn-view"
+                                (click)="viewDiscardedActivity(activity._id)">Ver</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="p-5 col text-center">
+                            <i class="text-muted">No hay actividades descartadas</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dd-grid gap-2 d-md-flex justify-content-md-end">
+        <button class="btn btn-light text-uppercase" (click)="viewIterationGraphics()" [joyrideStep]="steps[4].step"
+            [title]="steps[4].title" [text]="steps[4].text">Ver Gráficas</button>
+        <button class="btn btn-primary text-uppercase" (click)="nextIteration()">Siguiente Iteración</button>
+    </div>
+</div>

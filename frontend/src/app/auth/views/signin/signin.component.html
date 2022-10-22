@@ -1,0 +1,57 @@
+<div class="card box_shadow mb-5">
+  <div class="card-body p-5">
+    <h2 class="text-center mb-2">¡Bienvenido!</h2>
+    <h5 class="text-center mb-5">Ingresa a tu cuenta para continuar</h5>
+    <form class="auth_form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <fieldset [disabled]="loading || loading_verify">
+        <div class="mb-3">
+          <label for="login_email" class="form-label">Correo electrónico</label>
+          <input
+            formControlName="email"
+            type="email"
+            class="form-control"
+            id="login_email"
+            placeholder="nombre@unl.edu.ec"
+            autocomplete="off"
+            [ngClass]="{ 'is-invalid': submitted && f['email'].errors }"
+          />
+          <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+            <div *ngIf="f['email'].errors['required']">El email es requerido</div>
+            <div *ngIf="f['email'].errors['email']">El email debe ser válido</div>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label for="login_password" class="form-label">Contraseña</label>
+          <input
+            formControlName="password"
+            type="password"
+            class="form-control"
+            id="login_password"
+            placeholder="Tu contraseña"
+            [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
+          />
+          <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+            <div *ngIf="f['password'].errors['required']">La contraseña es requerida</div>
+          </div>
+        </div>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary">
+            Ingresar al sistema
+          </button>
+        </div>
+        <div class="d-grid d-md-flex justify-content-md-center">
+          <a [routerLink]="['/recover']" class="btn btn-link">
+            ¿Problemas para ingresar?
+          </a>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+  <div class="card-footer text-center py-4">
+    ¿No tienes una cuenta? <a [routerLink]="['/signup']">Regístrate</a>
+  </div>
+</div>
+
+<p class="text-muted mb-0 fs-6 text-center">
+  &copy; {{ year }}. Todos los derechos reservados.
+</p>

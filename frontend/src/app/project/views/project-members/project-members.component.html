@@ -1,0 +1,111 @@
+<div class="row mb-4">
+  <div class="col">
+    <ul class="nav flex-column flex-sm-row gap-3">
+      <li class="nav-item">
+        <a class="nav-link btn btn-link" [routerLink]="['/manager/project/', project_id, 'settings']">Proyecto</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link btn btn-light active" aria-current="page"
+          [routerLink]="['/manager/project/', project_id, 'members']">Colaboradores</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link btn btn-link" aria-current="page"
+          [routerLink]="['/manager/project/', project_id, 'roles']">Roles</a>
+      </li>
+    </ul>
+
+    <hr class="mt-4">
+  </div>
+</div>
+
+<div [joyrideStep]="steps[0].step" [title]="steps[0].title" [text]="steps[0].text">
+  <div *ngIf="!disabled" class="row mb-4">
+    <div class="col">
+      <div class="d-grid gap-3 d-flex">
+        <div  [joyrideStep]="steps[1].step" [title]="steps[1].title" [text]="steps[1].text">
+          <app-invite-member [project]="project_id" (refresh)="fetchMembers()"></app-invite-member>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div [joyrideStep]="steps[2].step" [title]="steps[2].title" [text]="steps[2].text">
+    <ng-container *ngIf="!loading; else usrlist">
+      <div class="table_list">
+        <div class="table_header d-none d-lg-block">
+          <div class="table_item_list">
+            <div class="row align-items-end">
+              <div class="col-auto">
+                <div [style]="{width: '40px'}"></div>
+              </div>
+              <div class="col">Nombre</div>
+              <div class="col-2">Rol</div>
+              <div class="col-2">Estado</div>
+              <div class="col-2">Fecha ingreso</div>
+              <div class="col-auto">
+                <div [style]="{width: '32px'}"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="table_body">
+          <div class="row">
+            <div class="col-sm-6 col-lg-12" *ngFor="let member of members | paginate: config">
+              <div class="table_item_list">
+                <div class="row align-items-center">
+                  <div class="col-lg-auto">
+                    <div class="lst_img mb-3 mb-lg-0">{{ member.user?.name ? member.user?.name.charAt(0):'' }}{{ member.user?.lastname ?
+                      member.user?.lastname.charAt(0):'' }}</div>
+                  </div>
+                  <div class="col-lg">
+                    <p class="mb-0" [style]="{ fontWeight: '500' }">{{ member.user?.name }} {{ member.user?.lastname }}</p>
+                    <span class="text-muted d-block d-lg-inline mb-3 mb-lg-0" [style]="{ fontSize: '12px' }">{{ member.user?.email }}</span>
+                  </div>
+                  <div class="col-7 col-lg-2 mb-3 mb-lg-0">
+                    <app-change-role [owner]="member._id" [member]="member" [project]="project_id" [selected]="member.role._id"></app-change-role>
+                  </div>
+                  <div class="col-5 col-lg-2 text-end text-lg-start mb-3 mb-lg-0">
+                    <span class="badge text-uppercase" [ngClass]="member.active ? 'bg-success' : 'bg-secondary'">{{
+                      member.active ? "Activo" : "Pendiente" }}</span>
+                  </div>
+                  <div class="col col-lg-2">
+                    <span [style]="{ fontSize: '12px' }">{{ member.date_admission | date: "dd/MM/yyyy, hh:mm a" }}</span>
+                  </div>
+                  <div class="col-auto">
+                    <div *ngIf="!member.owner && !disabled" class="btn-group">
+                      <div ngbDropdown display="dynamic" placement="bottom-right" [joyrideStep]="steps[3].step"
+                        [title]="steps[3].title" [text]="steps[3].text">
+                        <button type="button" class="btn btn-light opt_btn" ngbDropdownToggle>
+                          <fa-icon [icon]="['fas', 'ellipsis-v']"></fa-icon>
+                        </button>
+                        <div ngbDropdownMenu class="dropdown-menu dropdown-menu-lg-end">
+                          <button ngbDropdownItem (click)="deleteMember(member)">Dar de baja</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="member.owner || disabled" [style]="{width: '32px', height: '33px'}"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #usrlist>
+      <div class="d-flex justify-content-center mb-4">
+        <div class="spinner-border text-secondary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </ng-template>
+
+    <div *ngIf="members.length === 0 && !loading" class="col-12">
+      <p class="text-center text-muted fst-italic mb-0">Lista vacía</p>
+    </div>
+
+  </div>
+  <app-pagination [config]="config" [size]="members.length"></app-pagination>
+</div>

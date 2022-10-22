@@ -1,0 +1,72 @@
+<div class="card box_shadow mb-5">
+  <div class="card-body p-5">
+    <h2 class="text-center mb-2">Registro de cuenta</h2>
+    <h5 class="text-center mb-5">Por favor, ingresa tus datos personales</h5>
+    <form class="auth_form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <fieldset [disabled]="loading">
+        <div class="mb-3">
+          <label for="#register_firstname" class="form-label">Nombres</label>
+          <input formControlName="name" type="text" class="form-control" id="register_firstname"
+            placeholder="Tus nombres" autocomplete="off" [ngClass]="{ 'is-invalid': submitted && f['name'].errors }" />
+          <div *ngIf="submitted && f['name'].errors" class="invalid-feedback">
+            <div *ngIf="f['name'].errors['required']">El nombre es requerido</div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="#register_lastname" class="form-label">Apellidos</label>
+          <input formControlName="lastname" type="text" class="form-control" id="register_lastname"
+            placeholder="Tus apellidos" autocomplete="off"
+            [ngClass]="{ 'is-invalid': submitted && f['lastname'].errors }" />
+          <div *ngIf="submitted && f['lastname'].errors" class="invalid-feedback">
+            <div *ngIf="f['lastname'].errors['required']">El apellido es requerido</div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="#register_email" class="form-label">Correo electrónico</label>
+          <input formControlName="email" type="email" class="form-control" id="register_email"
+            placeholder="nombre@unl.edu.ec" autocomplete="off"
+            [ngClass]="{ 'is-invalid': submitted && f['email'].errors }" />
+          <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+            <div *ngIf="f['email'].errors['required']">El correo es requerido</div>
+            <div *ngIf="f['email'].errors['email']">El correo debe ser válido</div>
+            <div *ngIf="f['email'].errors['pattern']">El correo deber ser institucional</div>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label for="#register_password" class="form-label">Contraseña</label>
+          <input formControlName="password" type="password" class="form-control" id="register_password"
+            placeholder="Tu contraseña" [ngClass]="{ 'is-invalid': submitted && f['password'].errors }" />
+          <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+            <div *ngIf="f['password'].errors['required']">La contraseña es requerida</div>
+          </div>
+        </div>
+        <div class="mb-4">
+          <label for="#pconfirm_password" class="form-label">Confirmar Contraseña</label>
+          <input formControlName="confirm_password" type="password" class="form-control" id="confirm_password"
+            placeholder="Confirmar contraseña"
+            [ngClass]="{ 'is-invalid': submitted && f['confirm_password'].errors || form.errors?.['notmatched'] && (form.touched || form.dirty)}" />
+          <div *ngIf="(submitted && f['confirm_password'].errors)" class="invalid-feedback">
+            <div *ngIf="f['confirm_password'].errors['required']">La contraseña de confirmación es requerida</div>
+          </div>
+          <div *ngIf="form.errors?.['notmatched'] && (form.touched || form.dirty)" class="invalid-feedback">
+            <div *ngIf="form.errors?.['notmatched'] && (form.touched || form.dirty)">La contraseña de confirmación no
+              coincide</div>
+          </div>
+        </div>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary">
+            Registrar cuenta
+          </button>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+  <div class="card-footer text-center py-4">
+    ¿Ya tienes una cuenta? <a [routerLink]="['/']">Inicia sesión</a>
+  </div>
+</div>
+
+<p class="text-muted mb-0 fs-6 text-center">
+  &copy; {{ year }}. Todos los derechos reservados.
+</p>

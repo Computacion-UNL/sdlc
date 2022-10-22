@@ -1,0 +1,17 @@
+.table {
+  thead {
+    tr {
+      th {
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+    }
+  }
+  tbody {
+    tr {
+      td:first-child {
+        font-style: italic;
+      }
+    }
+  }
+}

@@ -1,0 +1,75 @@
+<div class="projects-teacher">
+  <div class="row align-items-center mb-4">
+    <div class="col-sm-7 col-xl-6">
+      <div class="col-sm-6 col-md-7 mb-2 mb-sm-0">
+        <form [formGroup]="form" (ngSubmit)="searchProjects()">
+          <fieldset>
+            <div class="search_input">
+              <span class="input-group-text">
+                <fa-icon [icon]="['fas', 'search']"></fa-icon>
+              </span>
+              <input type="text" class="form-control" placeholder="Buscar" formControlName="search"
+                autocomplete="off" />
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+    <div class="col-sm-5 col-xl-6">
+      <div class="d-grid gap-3 d-md-flex justify-content-sm-end">
+        <a class="btn btn-light" [routerLink]="['/manager/projects']">
+          Vista Normal
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="row mb-5">
+    <ng-container *ngIf="!loading; else prjlist">
+      <div class="col-md-6 col-xl-4 mb-4" *ngFor="let project of projects | paginate: config">
+        <div class="card bordered item_box">
+          <div class="card-body p-4">
+            <button class="title_box mb-0 truncate projects-teacher-redirect" (click)="showProgress(project._id)">{{project.name}}</button>
+            <br>
+            <p class="description_box mb-2 truncate">
+              <span *ngIf="project.description" [innerHTML]="removeHTMLTags(project.description)"></span>
+              <i *ngIf="!project.description">Sin descripción</i>
+            </p>
+            <p>
+              <span class="projects-teacher-labels">Actividades con Retraso:</span>
+              <span class="badge projects-teacher-badge">{{ project.activities_delayed}} actividad<span *ngIf="project.activities_delayed != 1">es</span></span>
+            </p>
+            <p>
+              <span class="projects-teacher-labels">Progreso</span>
+              <ngb-progressbar class="projects-teacher-progressbar" [value]="project.activities_progress">
+              </ngb-progressbar>
+              <span *ngIf="project.activities_numbers"
+                class="projects-teacher-tasks">{{project.activities_numbers[1].value}}/{{project.activities_numbers[0].value}}
+                tareas completadas</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #prjlist>
+      <div class="d-flex justify-content-center">
+        <div class="spinner-border text-secondary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </ng-template>
+
+    <div *ngIf="projects.length === 0 && !loading" class="col-12">
+      <app-empty [title]="'No hay proyectos'"
+        [description]="'No se encontraron proyectos con los criterios de búsqueda seleccionados'"></app-empty>
+    </div>
+
+    <div class="text-center pt-3 mb-4" *ngIf="searching">
+      <button type="button" class="btn btn-secondary" (click)="clearSearch()">
+        Limpiar Búsqueda
+      </button>
+    </div>
+  </div>
+</div>
+
+<app-pagination [config]="config" [size]="projects.length"></app-pagination>

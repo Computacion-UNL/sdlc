@@ -1,0 +1,42 @@
+<div *ngIf="!only_buttons; else buttons">
+  <div class="row">
+    <div class="col">
+      <hr />
+    </div>
+  </div>
+  <div class="row align-items-center">
+    <div class="col-sm-6 col-lg-5">
+      <p class="mb-0 text-muted mb-3 mb-sm-0 text-center text-sm-start">{{ config.currentPage * config.itemsPerPage <= size ? config.currentPage *
+          config.itemsPerPage:size }} resultado(s) de {{ size }} registros.</p>
+    </div>
+    <div class="col-sm-6 col-lg-7">
+      <pagination-template #p="paginationApi" [id]="config.id" (pageChange)="setPage($event)"
+        (pageBoundsCorrection)="setPage($event)">
+        <div class="d-grid gap-3 d-flex justify-content-center justify-content-sm-end align-items-center">
+          <div class="text-muted d-none d-lg-block">
+            {{ p.getCurrent() }} de {{ p.getLastPage() }} página(s)
+          </div>
+          <button type="button" class="btn btn-light" [disabled]="p.isFirstPage()" (click)="p.previous()">
+            Anterior
+          </button>
+          <button type="button" class="btn btn-secondary" [disabled]="p.isLastPage()" (click)="p.next()">
+            Siguiente
+          </button>
+        </div>
+      </pagination-template>
+    </div>
+  </div>
+</div>
+
+<ng-template #buttons>
+  <pagination-template #p="paginationApi" (pageChange)="setPage($event)" (pageBoundsCorrection)="setPage($event)">
+    <div class="d-grid gap-3 d-flex justify-content-center mb-2 only_buttons">
+      <button type="button" class="btn btn-light" [disabled]="p.isFirstPage()" (click)="p.previous()">
+        Anterior
+      </button>
+      <button type="button" class="btn btn-secondary" [disabled]="p.isLastPage()" (click)="p.next()">
+        Siguiente
+      </button>
+    </div>
+  </pagination-template>
+</ng-template>

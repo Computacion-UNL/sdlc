@@ -1,0 +1,53 @@
+.card-body {
+  .list-group-item {
+    border: 1px solid #dfe2e5;
+    border-radius: 5px;
+  }
+  .list-group-item:not(:last-child) {
+    margin-bottom: 10px;
+  }
+
+  .item_activity {
+    a {
+      text-decoration: none;
+      &:hover {
+        color: #8088c0;
+      }
+    }
+  }
+  .item_activity:not(:last-child) {
+    margin-bottom: 10px;
+  }
+}
+
+// badges
+.bg_to-do {
+  background-color: #f0f3f8;
+  color: #444b87;
+}
+
+.bg_in-progress {
+  background-color: #d4f1f9;
+  color: #444b87;
+}
+
+.bg_done {
+  background-color: #2be977;
+  color: #0f4a2f;
+}
+
+.__b {
+  padding: 4px 8px;
+  font-size: 12px;
+  color: #99A6BA;
+}
+
+.assigned {
+  max-height: 420px;
+  overflow: auto;
+}
+
+.projects {
+  max-height: 292px;
+  overflow: auto;
+}

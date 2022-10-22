@@ -1,0 +1,36 @@
+.projects-teacher {
+    &-progressbar {
+        height: 0.5rem !important;  
+    }
+
+    ::ng-deep .progress-bar {
+        background-color:#3e4685 !important;
+    }
+
+    &-labels {
+        color: #8995ac;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    &-badge {
+        background-color: #EDF0F4;
+        color: #3e4685;
+        margin-left: 10px;
+    }
+
+    &-tasks {
+        color: #7D8BA0;
+        font-size: 12px;
+        margin-top: 3px;
+        display: flex;
+        justify-content: end;
+    }
+
+    &-redirect {
+        border: none;
+        background-color: transparent;
+        padding-left: 0;
+    }
+}
+

@@ -1,0 +1,16 @@
+<h5 *ngIf="!show" (click)="showInput(true)" class="mb-0">{{ name }}</h5>
+<form (ngSubmit)="onSubmit()">
+  <div class="hidden_input_group">
+    <input
+      #refInput
+      [(ngModel)]="name"
+      name="name"
+      type="text"
+      class="form-control"
+      placeholder="Añade un nombre..."
+      autocomplete="off"
+      [hidden]="!show"
+      (focusout)="showInput(false)"
+    >
+  </div>
+</form>

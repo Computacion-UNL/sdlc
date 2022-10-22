@@ -1,0 +1,190 @@
+<div class="project-reports">
+  <div class="row align-items-center mb-4">
+    <div class="col text-end">
+      <button class="btn btn-primary" [joyrideStep]="steps[4].step" [title]="steps[4].title" [text]="steps[4].text" (click)="generateReport()" [disabled]="loading_generate">
+        <ng-container *ngIf="!loading_generate; else report">
+          Crear Reporte
+        </ng-container>
+        <ng-template #report>
+          <div class="d-flex justify-content-center">
+              <div class="spinner-border spinner-border-sm text-light" role="status">
+              <span class="visually-hidden">Loading...</span>
+              </div>
+          </div>
+        </ng-template>
+      </button>
+    </div>
+  </div>
+  <div [joyrideStep]="steps[0].step" [title]="steps[0].title" [text]="steps[0].text">
+    <h3 class="title_reports">Resumen del Proyecto</h3>
+    <div class="row mb-4">
+      <div class="col-lg-5 mb-3 mb-lg-0">
+        <div class="card bordered item_box" [joyrideStep]="steps[1].step" [title]="steps[1].title" [text]="steps[1].text">
+          <div class="card-header">Colaboradores</div>
+          <div class="card-body p-4">
+            <ul class="list-group activities-wrap">
+              <li *ngFor="let collaborator of project.collaborators" class="list-group-item list-group-item-action">
+                {{collaborator.user[0]?.name}} {{collaborator.user[0]?.lastname}} - {{collaborator.role[0]?.name}}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="card bordered item_box" [joyrideStep]="steps[2].step" [title]="steps[2].title" [text]="steps[2].text">
+          <div class="card-header">Resumen de Actividades</div>
+          <div class="card-body p-4 overflow-auto">
+            <ngx-charts-pie-chart *ngIf="showStadistics" [view]="view" [gradient]="true" [results]="activities_total"
+              [legend]="showLegend" [labels]="true" [legendTitle]="legend">
+            </ngx-charts-pie-chart>
+            <p *ngIf="!showStadistics" class="text-center text-muted fst-italic">No se han agregado actividades al proyecto</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+  <div [joyrideStep]="steps[3].step" [title]="steps[3].title" [text]="steps[3].text">
+    <h3 class="title_reports">Resumen de Iteraciones</h3>
+    <div *ngIf="project.iterations?.length > 0">
+      <div *ngFor="let iteration of project.iterations" class="mb-4">
+        <div class="iteration_box">
+          <div class="row">
+            <div class="col-lg mb-3 mb-lg-0">
+              <div class="table-responsive">                
+                <table class="table table-borderless mb-0">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <b class="text-muted">Iteración:</b>
+                      </td>
+                      <td>
+                        {{iteration.name}}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <b class="text-muted">Objetivo:</b>
+                      </td>
+                      <td>
+                        {{iteration.objective}}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col-lg">
+              <div class="table-responsive">                
+                <table class="table table-borderless mb-0">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <b class="text-muted">Fecha Inicio:</b>
+                      </td>
+                      <td>
+                        {{iteration.start_date | date: 'dd/MM/yyyy':"+0000" }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <b class="text-muted">Fecha Finalización:</b>
+                      </td>
+                      <td>
+                        {{iteration.finish_date | date: 'dd/MM/yyyy':"+0000" }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="iteration.activities.length > 0" class="row">
+          <div class="col-lg-5 mb-3 mb-lg-0">
+            <div class="card bordered item_box">
+              <div class="card-header">Listado de actividades</div>
+              <div class="card-body p-4">
+                <ul class="list-group activities-wrap">
+                  <li *ngFor="let activity of iteration.activities" class="list-group-item list-group-item-action">
+                    <div class="d-sm-flex flex-lg-column flex-xl-row align-items-center align-items-lg-start align-items-xl-center gap-2">
+                      <div class="flex-grow-1 mb-1 mb-sm-0">
+                        <div>
+                          {{activity.name}}
+                        </div>
+                        <div>
+                          <small class="text-muted">Vence: {{ activity.finish_date | date: 'dd/MM/yyyy':"+0000" }}</small>
+                        </div>
+                      </div>
+                      <div>
+                        <span class="badge text-uppercase" [ngClass]="setBackground(activity.status)">{{activity.status}}</span>                      
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="card bordered item_box">
+              <div class="card-header">Gráfica de la iteración</div>
+              <div class="card-body p-4 overflow-auto">
+                <ngx-charts-bar-vertical [view]="view" [results]="iteration.activities_numbers" [gradient]="gradient"
+                  [legend]="true" [showXAxisLabel]="showXAxis" [xAxis]="showXAxis" [legendTitle]="legend">
+                </ngx-charts-bar-vertical>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="iteration.activities.length === 0">
+          <p class="text-center">No existen actividades planificadas para esta iteración</p>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="project.iterations?.length === 0">
+      <p class="text-center">No se han agregado iteraciones dentro del proyecto</p>
+    </div>
+    <div *ngIf="project.activities_only?.length > 0">
+      <h3 class="title_reports">Actividades Independientes</h3>
+      <div class="row">
+        <div class="col-lg-5 mb-3 mb-lg-0">
+          <div class="card bordered item_box">          
+            <div class="card-header">Listado de actividades</div>
+            <div class="card-body p-4">
+              <ul class="list-group activities-wrap">
+                <li *ngFor="let activity of project.activities_only" class="list-group-item list-group-item-action">
+                  <div class="d-sm-flex flex-lg-column flex-xl-row align-items-center align-items-lg-start align-items-xl-center gap-2">
+                    <div class="flex-grow-1 mb-1 mb-sm-0">
+                      <div>
+                        {{activity.name}}
+                      </div>
+                      <div>
+                        <small class="text-muted">Vence: {{ activity.finish_date | date: 'dd/MM/yyyy':"+0000" }}</small>
+                      </div>
+                    </div>
+                    <div>
+                      <span class="badge text-uppercase" [ngClass]="setBackground(activity.status)">{{activity.status}}</span>                      
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-7">
+          <div class="card bordered item_box">
+            <div class="card-header">Gráfica de Actividades</div>
+            <div class="card-body p-4 overflow-auto">            
+              <ngx-charts-bar-vertical [view]="view" [results]="project.activities_numbers" [gradient]="gradient"
+                [legend]="true" [showXAxisLabel]="showXAxis" [xAxis]="showXAxis" [legendTitle]="legend">
+              </ngx-charts-bar-vertical>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>

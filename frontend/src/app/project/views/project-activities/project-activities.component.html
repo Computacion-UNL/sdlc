@@ -1,0 +1,610 @@
+<div class="project_activities">
+  <div
+    *ngIf="is_activity"
+    [joyrideStep]="steps[0].step"
+    [title]="steps[0].title"
+    [text]="steps[0].text"
+  >
+    <h3 class="title_activity">Administración de la Actividad</h3>
+  </div>
+
+  <div
+    *ngIf="is_subactivity"
+    [joyrideStep]="steps[1].step"
+    [title]="steps[1].title"
+    [text]="steps[1].text"
+  >
+    <h3 class="title_activity">Administración de la Subactividad</h3>
+  </div>
+
+  <div
+    *ngIf="is_incidence"
+    [joyrideStep]="steps[2].step"
+    [title]="steps[2].title"
+    [text]="steps[2].text"
+  >
+    <h3 class="title_activity">Administración de la Incidencia</h3>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-6 col-xl-7 col-xxl-8">
+      <div class="card bordered item_box mb-5">
+        <div *ngIf="project" class="card-header">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+              <li class="breadcrumb-item"><a routerLink="/">Dashboard</a></li>
+              <li class="breadcrumb-item">
+                <a [routerLink]="['../../']">{{ project?.name }}</a>
+              </li>
+              <li
+                class="breadcrumb-item active text-truncate"
+                aria-current="page"
+              >
+                {{
+                  activity?.name?.length > 22
+                    ? (activity?.name | slice: 0:22) + "..."
+                    : activity?.name
+                }}
+              </li>
+            </ol>
+          </nav>
+        </div>
+        <div class="card-body px-4">
+          <ng-container *ngIf="!loading_activity; else spinner">
+            <app-edit-activity-name
+              *ngIf="activity"
+              [name]="activity.name"
+              [activity_id]="activity._id"
+              (changes)="fetchChangesByActivity()"
+              (emit_name)="refreshName($event)"
+            ></app-edit-activity-name>
+            <hr />
+            <div
+              [joyrideStep]="steps[3].step"
+              [title]="steps[3].title"
+              [text]="steps[3].text"
+            >
+              <h6 class="title_comp">Descripción</h6>
+              <app-edit-activity-description
+                [description]="activity.description"
+                [activity_id]="activity._id"
+                [disabled]="disabled"
+                (changes)="fetchChangesByActivity()"
+              ></app-edit-activity-description>
+            </div>
+          </ng-container>
+
+          <div *ngIf="subcomponents">
+            <div
+              class="mb-4"
+              [joyrideStep]="steps[8].step"
+              [title]="steps[8].title"
+              [text]="steps[8].text"
+            >
+              <h6 class="title_comp">Subactividades</h6>
+              <ng-container *ngIf="!loading_subactivities; else spinner">
+                <ul *ngIf="subactivities.length > 0" class="list-group">
+                  <li
+                    *ngFor="let subactivity of subactivities"
+                    class="list-group-item px-3 mb-2"
+                  >
+                    <a
+                      class="text-muted text-decoration-none"
+                      [routerLink]="[
+                        '/manager/project',
+                        subactivity.project,
+                        'subactivity',
+                        subactivity._id
+                      ]"
+                    >
+                      {{ subactivity.name }}
+                    </a>
+                  </li>
+                </ul>
+                <p *ngIf="subactivities.length === 0 && disabled">
+                  No se planificaron subactividades para esta actividad
+                </p>
+                <app-create-activity
+                  *ngIf="activity?._id && !disabled"
+                  [project_id]="activity.project?._id"
+                  [iteration_id]="activity?.iteration?._id"
+                  [activity_id]="activity_id"
+                  [incidence]="false"
+                  [s_date]="activity?.start_date"
+                  (refresh)="addToSubactivities($event)"
+                >
+                </app-create-activity>
+              </ng-container>
+            </div>
+
+            <div
+              class="mb-4"
+              [joyrideStep]="steps[9].step"
+              [title]="steps[9].title"
+              [text]="steps[9].text"
+            >
+              <h6 class="title_comp">Incidencias</h6>
+              <ng-container *ngIf="!loading_incidences; else spinner">
+                <ul *ngIf="incidences.length > 0" class="list-group">
+                  <li
+                    *ngFor="let incidence of incidences"
+                    class="list-group-item px-3 mb-2"
+                  >
+                    <a
+                      class="text-muted text-decoration-none"
+                      [routerLink]="[
+                        '/manager/project',
+                        incidence.project,
+                        'incidence',
+                        incidence._id
+                      ]"
+                    >
+                      {{ incidence.name }}
+                    </a>
+                  </li>
+                </ul>
+                <p *ngIf="incidences.length === 0 && disabled">
+                  No se presentaron incidencias en esta actividad
+                </p>
+                <app-create-activity
+                  *ngIf="activity?._id && !disabled"
+                  [project_id]="activity?.project?._id"
+                  [iteration_id]="activity?.iteration?._id"
+                  [activity_id]="activity_id"
+                  [incidence]="true"
+                  (refresh)="addToIncidences($event)"
+                >
+                </app-create-activity>
+              </ng-container>
+            </div>
+          </div>
+          <div
+            *ngIf="!subcomponents"
+            class="mb-4"
+            [joyrideStep]="steps[10].step"
+            [title]="steps[10].title"
+            [text]="steps[10].text"
+          >
+            <h6 class="title_comp">Tareas por Realizar</h6>
+            <ul class="list-group">
+              <app-change-task
+                *ngFor="let task of activity.tasks"
+                [activity]="activity"
+                [task]="task"
+                (refresh)="tasks($event)"
+                (e_changes)="fetchChangesByActivity()"
+              >
+              </app-change-task>
+            </ul>
+            <p *ngIf="activity.tasks?.length === 0 && disabled">
+              No existen tareas planificadas para esta
+              <span *ngIf="is_subactivity">subactividad</span>
+              <span *ngIf="is_incidence">incidencia</span>
+            </p>
+            <app-create-activity
+              *ngIf="!disabled"
+              [activity_id]="activity_id"
+              [incidence]="false"
+              [task]="true"
+              (refresh)="tasks($event)"
+              (e_changes)="fetchChangesByActivity()"
+            >
+            </app-create-activity>
+          </div>
+
+          <div
+            [joyrideStep]="steps[11].step"
+            [title]="steps[11].title"
+            [text]="steps[11].text"
+          >
+            <h6 class="title_comp">Enlaces Externos</h6>
+            <div *ngIf="urlAttachments.length > 0" class="list-group mb-0">
+              <li
+                *ngFor="let attachment of urlAttachments"
+                class="list-group-item"
+              >
+                <div class="d-flex">
+                  <div
+                    class="flex-grow-1 text-muted"
+                    (click)="editAttachment(attachment)"
+                    style="cursor: pointer"
+                  >
+                    {{ attachment.name }}
+                  </div>
+                  <a
+                    href="{{ attachment.url }}"
+                    target="_blank"
+                    class="link-secondary"
+                  >
+                    <fa-icon [icon]="['fas', 'external-link-alt']"></fa-icon>
+                  </a>
+                </div>
+              </li>
+            </div>
+            <p *ngIf="urlAttachments.length === 0 && disabled">
+              No se agregaron enlaces externos para esta
+              <span *ngIf="is_activity">actividad</span>
+              <span *ngIf="is_subactivity">subactividad</span>
+              <span *ngIf="is_incidence">incidencia</span>
+            </p>
+            <app-create-attachment
+              *ngIf="!disabled"
+              [type]="'url'"
+              [activity]="activity_id"
+              [attachment]="urlAttachment"
+              (refresh)="addToUrlAttachment($event)"
+            >
+            </app-create-attachment>
+          </div>
+        </div>
+      </div>
+      <ul class="nav gap-3">
+        <li
+          class="nav-item"
+          [joyrideStep]="steps[13].step"
+          [title]="steps[13].title"
+          [text]="steps[13].text"
+        >
+          <button
+            class="nav-link btn"
+            [ngClass]="show ? 'btn-light' : 'btn-link'"
+            (click)="toggle(true)"
+          >
+            Comentarios
+          </button>
+        </li>
+        <li
+          class="nav-item"
+          [joyrideStep]="steps[14].step"
+          [title]="steps[14].title"
+          [text]="steps[14].text"
+        >
+          <button
+            class="nav-link btn"
+            [ngClass]="!show ? 'btn-light' : 'btn-link'"
+            (click)="toggle(false)"
+          >
+            Historial
+          </button>
+        </li>
+      </ul>
+      <hr class="mb-4" />
+      <div [hidden]="!show">
+        <app-activity-comments
+          [activity_id]="activity_id"
+          [disabled]="disabled"
+        ></app-activity-comments>
+      </div>
+      <div [hidden]="show" class="changes_wrapper mb-4">
+        <ul class="list-group">
+          <li *ngFor="let change of changes" class="list-group-item mb-3 p-4">
+            <p class="mb-2">
+              <i>{{ change.author.name }} {{ change.author.lastname }}</i> ha
+              modificado el campo:
+              <b>{{ change.attribute_type }}</b>
+            </p>
+            <div class="d-flex align-items-center gap-3 mb-2">
+              <div>
+                <span
+                  class="text-muted"
+                  [innerHTML]="
+                    change.attribute_type.includes('Fecha')
+                      ? (change.previous_value | date: 'dd/MM/yyyy':'+0000')
+                      : removeHTMLTags(change.previous_value || 'Nada')
+                  "
+                ></span>
+              </div>
+              <div>
+                <fa-icon [icon]="['fas', 'arrow-right']"></fa-icon>
+              </div>
+              <div>
+                <span
+                  class="text-muted"
+                  [innerHTML]="
+                    change.attribute_type.includes('Fecha')
+                      ? (change.new_value | date: 'dd/MM/yyyy':'+0000')
+                      : removeHTMLTags(change.new_value || 'Nada')
+                  "
+                ></span>
+              </div>
+            </div>
+            <div>
+              <small class="text-uppercase text-muted">{{
+                change.created_at | date: "dd/MM/yyyy, hh:mm a"
+              }}</small>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-lg-6 col-xl-5 col-xxl-4">
+      <div class="card activity_status mb-4">
+        <div class="card-body">
+          <div
+            class="row align-items-center mb-3"
+            [joyrideStep]="steps[4].step"
+            [title]="steps[4].title"
+            [text]="steps[4].text"
+          >
+            <div class="col">Estado:</div>
+            <div class="col-7">
+              <form [formGroup]="formStatus">
+                <select
+                  class="form-control mb-0"
+                  name="status"
+                  formControlName="status"
+                  (change)="updateStatus($event)"
+                  [attr.disabled]="
+                    disabled || !activity?.iteration?.started ? '' : null
+                  "
+                >
+                  <option
+                    *ngFor="let option of status_options"
+                    [ngValue]="option"
+                  >
+                    {{ option }}
+                  </option>
+                </select>
+              </form>
+            </div>
+          </div>
+          <div
+            class="row align-items-center mb-3"
+            [joyrideStep]="steps[5].step"
+            [title]="steps[5].title"
+            [text]="steps[5].text"
+          >
+            <div class="col">Prioridad:</div>
+            <div class="col-7">
+              <form [formGroup]="formPriority">
+                <select
+                  class="form-control mb-0"
+                  name="priority"
+                  formControlName="priority"
+                  (change)="updatePriority($event)"
+                  [attr.disabled]="
+                    disabled || activity?.iteration?.started ? '' : null
+                  "
+                >
+                  <option
+                    *ngFor="let option of priority_options"
+                    [ngValue]="option"
+                  >
+                    {{ option }}
+                  </option>
+                </select>
+              </form>
+            </div>
+          </div>
+          <div
+            class="row align-items-center mb-3"
+            [joyrideStep]="steps[6].step"
+            [title]="steps[6].title"
+            [text]="steps[6].text"
+          >
+            <div class="col-5">Responsables:</div>
+            <div class="col-7">
+              <button
+                class="btn btn-primary d-block w-100"
+                (click)="openResponsible()"
+              >
+                Asignar
+              </button>
+            </div>
+          </div>
+          <div
+            [joyrideStep]="steps[7].step"
+            [title]="steps[7].title"
+            [text]="steps[7].text"
+          >
+            <div class="row align-items-center mb-3">
+              <div class="col">Inicia en:</div>
+              <div class="col-7">
+                <form [formGroup]="formStartDate">
+                  <input
+                    type="date"
+                    class="form-control"
+                    formControlName="start_date"
+                    (change)="updateStartDate($event)"
+                    [attr.disabled]="
+                      disabled || activity?.iteration?.started ? '' : null
+                    "
+                    min="{{ getLimitDate(now) }}"
+                  />
+                </form>
+              </div>
+            </div>
+            <div class="row align-items-center mb-3">
+              <div class="col">Finaliza en:</div>
+              <div class="col-7">
+                <form [formGroup]="formFinishDate">
+                  <input
+                    type="date"
+                    class="form-control"
+                    formControlName="finish_date"
+                    (change)="updateFinishDate($event)"
+                    [attr.disabled]="
+                      disabled || activity?.iteration?.started ? '' : null
+                    "
+                    min="{{ getLimitDate(now) }}"
+                  />
+                </form>
+              </div>
+            </div>
+            <div class="row align-items-center">
+              <div class="col">Atraso (días):</div>
+              <div class="col-7">
+                <form>
+                  <input
+                    type="number"
+                    name="delay"
+                    class="form-control"
+                    [(ngModel)]="delay"
+                    readonly
+                  />
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mb-4">
+        <div
+          class="card bordered mb-2"
+          [joyrideStep]="steps[12].step"
+          [title]="steps[12].title"
+          [text]="steps[12].text"
+        >
+          <div class="card-header">Archivos adjuntos</div>
+          <div class="card-body pb-0">
+            <ng-container *ngIf="!loading_attachments; else spinner">
+              <div class="files_wrapper">
+                <div
+                  *ngIf="fileAttachments.length > 0; else NoFiles"
+                  class="d-flex justify-content-center mb-2"
+                >
+                  <div
+                    *ngFor="
+                      let attachment of fileAttachments | paginate: config
+                    "
+                    class="flex-shrink-1"
+                  >
+                    <div class="card">
+                      <div ngbDropdown class="card-body text-center p-2">
+                        <button
+                          class="btn attachment-button text-muted mb-2"
+                          ngbDropdownToggle
+                        >
+                          <fa-icon
+                            [icon]="['fas', 'paperclip']"
+                            size="3x"
+                          ></fa-icon>
+                        </button>
+                        <div ngbDropdownMenu>
+                          <button
+                            ngbDropdownItem
+                            (click)="editAttachment(attachment)"
+                          >
+                            Editar
+                          </button>
+                          <button
+                            ngbDropdownItem
+                            (click)="downloadAttachment(attachment)"
+                          >
+                            Descargar
+                          </button>
+                        </div>
+                        <p class="attachment-text text-muted mb-0">
+                          {{ attachment.name }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <ng-template #NoFiles>
+                  <p
+                    class="text-muted fst-italic text-center"
+                    [ngStyle]="{ fontSize: '12px' }"
+                  >
+                    No existen archivos adjuntos ingresados
+                  </p>
+                </ng-template>
+                <app-pagination
+                  *ngIf="fileAttachments.length > 0"
+                  [config]="config"
+                  [size]="fileAttachments.length"
+                  [only_buttons]="true"
+                >
+                </app-pagination>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <app-create-attachment
+          *ngIf="!disabled"
+          [hidden]="loading_attachments"
+          [type]="'file'"
+          [activity]="activity_id"
+          [attachment]="fileAttachment"
+          (refresh)="addToFileAttachment($event)"
+        >
+        </app-create-attachment>
+      </div>
+      <div
+        *ngIf="is_activity && can_delete_activity && !disabled"
+        class="danger_zone"
+        [joyrideStep]="steps[15].step"
+        [title]="steps[15].title"
+        [text]="steps[15].text"
+      >
+        <div class="d-flex justify-content-center">
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="deleteActivity(activity)"
+          >
+            Dar de Baja Actividad
+          </button>
+        </div>
+      </div>
+      <div
+        *ngIf="is_subactivity && can_delete_subactivity && !disabled"
+        class="danger_zone"
+        [joyrideStep]="steps[15].step"
+        [title]="steps[15].title"
+        [text]="steps[15].text"
+      >
+        <div class="d-flex justify-content-center">
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="deleteActivity(activity)"
+          >
+            Dar de Baja Subactividad
+          </button>
+        </div>
+      </div>
+      <div
+        *ngIf="is_incidence && can_delete_incidence && !disabled"
+        class="danger_zone"
+        [joyrideStep]="steps[15].step"
+        [title]="steps[15].title"
+        [text]="steps[15].text"
+      >
+        <div class="d-flex justify-content-center">
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="deleteActivity(activity)"
+          >
+            Dar de Baja Incidencia
+          </button>
+        </div>
+      </div>
+      <div *ngIf="can_discard_activity && !disabled" class="danger_zone">
+        <div class="d-flex justify-content-center">
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="discardActivity()"
+          >
+            Descartar Actividad
+          </button>
+        </div>
+      </div>
+      <div *ngIf="activity && activity.discard" class="discard_msg">
+        <div class="title">Actividad Descartada</div>
+        <div class="content"><b>Motivo:</b> {{ activity?.reason_discard }}</div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #spinner>
+    <div class="d-flex justify-content-center mb-4">
+      <div class="spinner-border text-secondary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </ng-template>
+</div>

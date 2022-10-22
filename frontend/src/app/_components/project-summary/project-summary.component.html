@@ -1,0 +1,55 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Proyecto</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss()"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="card bordered item_box">
+    <div class="card-header">Información del proyecto</div>
+    <div class="card-body p-4">
+      <div class="project_title">Nombre del proyecto</div>
+      <div class="project_wrap">
+        <p>{{ project?.name }}</p>
+      </div>
+      <hr />
+      <div class="project_title">Descripción</div>
+      <div class="project_wrap">
+        <div [innerHTML]="project?.description"></div>
+      </div>
+      <ng-container *ngIf="project?.general_objective">
+        <hr />
+        <div class="project_title">Objetivo General</div>
+        <div class="project_wrap">
+          <p>{{ project?.general_objective }}</p>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="project?.specific_objectives && project?.specific_objectives?.length > 0">
+        <hr />
+        <div class="project_title">Objetivos Específicos</div>
+        <div class="project_wrap">          
+          <ul>
+            <li *ngFor="let specific of project?.specific_objectives">
+              {{ specific.name }}
+            </li>
+          </ul>
+        </div>
+      </ng-container>
+      <hr />
+      <div class="d-grid gap-3 d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="activeModal.dismiss()"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+<div class="info-iteration">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Resumen de la Iteración {{iteration.name}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col">
+        <span class="text-muted">Fecha de Inicio:</span> {{iteration.start_date | date: "dd/MM/yyyy":"UTC"}}
+      </div>
+      <div class="col">
+        <span class="text-muted">Fecha de Finalización:</span> {{iteration.finish_date | date: "dd/MM/yyyy":"UTC"}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <span class="text-muted">Objetivo:</span> {{iteration.objective}}
+      </div>
+    </div>
+    <div class="card bordered item_box mt-3">
+      <div class="card-header">Resumen General de Actividades</div>
+      <div class="card-body p-4 overflow-auto mx-auto">
+        <ngx-charts-bar-vertical [view]="view" [results]="results" [gradient]="gradient" [legend]="true"
+          [showXAxisLabel]="showXAxis" [xAxis]="showXAxis" [legendTitle]="legend">
+        </ngx-charts-bar-vertical>
+      </div>
+    </div>
+  </div>
+</div>

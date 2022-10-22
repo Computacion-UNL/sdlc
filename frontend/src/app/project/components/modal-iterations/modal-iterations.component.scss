@@ -1,0 +1,26 @@
+// badges
+.bg_to-do {
+  background-color: #f0f3f8;
+  color: #444b87;
+}
+
+.bg_in-progress {
+  background-color: #d4f1f9;
+  color: #444b87;
+}
+
+.bg_done {
+  background-color: #2be977;
+  color: #0f4a2f;
+}
+
+.activities_wrapper {
+  max-height: 275px;
+  overflow: auto;
+  padding-right: 10px;
+}
+
+.activity_link {
+  color: #3f4551;
+  text-decoration: none;
+}

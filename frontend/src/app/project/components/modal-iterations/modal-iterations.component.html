@@ -1,0 +1,37 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">{{ name }}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="card bordered item_box">
+    <div class="card-header">Resumen de actividades</div>
+    <div class="card-body p-4">
+      <div class="activities_wrapper mb-4">
+        <ul *ngFor="let activity of activities" class="list-group mb-2">
+          <a class="activity_link" [routerLink]="['/manager/project',activity.project,'activity',activity._id]"
+            (click)="activeModal.dismiss()">
+            <li class="list-group-item px-3 py-2">
+              <div class="d-flex gap-3 align-items-center">
+                <div class="flex-grow-1">
+                  {{activity.name}}
+                </div>
+                <div *ngIf="activity.status">
+                  <span class="badge text-uppercase" [ngClass]="setBackground(activity.status)">
+                    {{ activity.status}}
+                  </span>
+                </div>
+              </div>
+            </li>
+          </a>
+        </ul>
+      </div>
+      <div class="d-grid gap-3 d-flex justify-content-end">
+        <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

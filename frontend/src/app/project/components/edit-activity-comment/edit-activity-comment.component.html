@@ -1,0 +1,53 @@
+<div class="comment_box mb-3" [ngClass]="comment._id ? 'comment_bordered':''">
+  
+  <div class="row">
+    <div class="col-auto">
+      <div class="lst_img" *ngIf="img_url; else elseImg" [style]="{ backgroundImage: 'url('+img_url+')' }"></div>
+      <ng-template #elseImg>
+        <ng-container *ngIf="comment?.author; else usrName">
+          <div class="lst_img">{{ comment.author?.name ? comment.author?.name.charAt(0):'' }}{{ comment.author?.lastname ? comment.author?.lastname.charAt(0):'' }}</div>
+        </ng-container>
+        <ng-template #usrName>
+          <div class="lst_img">{{ user?.name ? user?.name.charAt(0):'' }}{{ user?.lastname ? user?.lastname.charAt(0):'' }}</div>
+        </ng-template>
+      </ng-template>
+    </div>
+  
+    <div class="col">
+      <div *ngIf="!show">
+        <div *ngIf="comment._id; else elseBlock" class="comment_wrapper">
+          <div [innerHTML]="comment.description"></div>
+          <div class="d-flex flex-column flex-sm-row flex-lg-column flex-xl-row gap-1 gap-sm-3 gap-lg-1 gap-xl-3 opt_wrapper mt-2">
+            <div *ngIf="!disabled" class="d-flex gap-3">
+              <button class="_opt btn btn-link text-secondary" *ngIf="user?.id === comment.author._id" (click)="showInput(true)">Editar</button>
+              <button class="_opt btn btn-link text-danger" *ngIf="user?.id === comment.author._id" (click)="deleteComment()">Dar de baja</button>
+            </div>
+            <span class="comment_author text-muted">{{ comment.created_at | date: 'dd/MM/yyyy, hh:mm a' }} - {{ comment.author?.name }} {{ comment.author?.lastname }}</span>
+          </div>
+        </div>
+        <ng-template #elseBlock>
+          <div class="dummy_placeholder" (click)="showInput(true)">          
+            <span class="text-muted fst-italic">Añadir comentario</span>
+          </div>    
+        </ng-template>
+      </div>
+      <div class="editor_wrapper" [hidden]="!show">
+        <form (ngSubmit)="update()">
+          <fieldset>
+            <angular-editor
+              #refEditor
+              [placeholder]="'Agrega una descripción...'" 
+              [(ngModel)]="comment.description"
+              name="description"
+              [config]="editorConfig"
+            ></angular-editor>
+            <div class="d-flex justify-content-end gap-2 mt-3">
+              <button class="btn btn-primary" type="submit">Guardar</button>
+              <button class="btn btn-light" type="button" (click)="showInput(false)">Cancelar</button>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,57 @@
+<div class="progress-project">
+    <div class="modal-header">
+        <h4 class="modal-title">Progreso del Proyecto</h4>
+        <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="progress-project-bordered">
+            <h3 class="progress-project-header">Resumen de Actividades</h3>
+            <hr class="progress-project-separator">
+            <div class="progress-project-general">
+                <div *ngFor="let activity of performed_activities" class="row progress-project-container-item mb-2">
+                    <div class="col-9">{{activity.name}}</div>
+                    <div class="col-3 progress-project-badge"
+                        [ngClass]="{'pending': activity.status === 'Por Hacer','develop': activity.status === 'En Curso','finish': activity.status === 'Finalizada'}">
+                        {{activity.status}}</div>
+                    <!-- <div class="col-1">
+                        <span *ngIf="activity.responsable.length == 0" class="progress-project-collaborators">SR</span>
+                        <span *ngIf="activity.responsable.length == 1"
+                            class="progress-project-collaborators">{{activity.responsable[0].name.charAt(0)}}{{activity.responsable[0].lastname.charAt(0)}}</span>
+                        <span *ngIf="activity.responsable.length >= 2" class="progress-project-collaborators">
+                            +{{activity.responsable.length}}</span>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="progress-project-bordered">
+                    <h3 class="progress-project-header">Actividades con retraso</h3>
+                    <hr class="progress-project-separator">
+                    <div  class="progress-project-irregular">
+                        <div *ngFor="let activity of delayed_activities" class="progress-project-activity">
+                            {{activity.name}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="progress-project-bordered">
+                    <h3 class="progress-project-header">Actividades descartadas</h3>
+                    <hr class="progress-project-separator">
+                    <div class="progress-project-irregular">
+                        <div *ngFor="let activity of discard_activities" class="progress-project-activity">
+                            {{activity.name}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="progress-project-buttons">
+            <button class="btn btn-secondary" (click)="activeModal.dismiss()">Cerrar</button>
+            <button class="btn btn-primary" (click)="goProject()">Ir al Proyecto</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,98 @@
+<div class="row mb-4">
+  <div class="col">
+    <ul class="nav flex-column flex-sm-row gap-3">
+      <li class="nav-item">
+        <a class="nav-link btn btn-link" [routerLink]="['/manager/project/', project_id, 'settings']">Proyecto</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link btn btn-link" aria-current="page"
+          [routerLink]="['/manager/project/', project_id, 'members']">Colaboradores</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link btn btn-light active" aria-current="page"
+          [routerLink]="['/manager/project/', project_id, 'roles']">Roles</a>
+      </li>
+    </ul>
+    <hr class="mt-4">
+  </div>
+</div>
+
+<div [joyrideStep]="steps[0].step" [title]="steps[0].title" [text]="steps[0].text">
+  <div *ngIf="!disabled" class="row mb-4">
+    <div class="col">
+      <div class="d-grid gap-3 d-flex">
+        <button type="button" class="btn btn-primary" (click)="open(null)" [joyrideStep]="steps[1].step"
+          [title]="steps[1].title" [text]="steps[1].text">
+          Añadir roles
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Listado de Roles -->
+  <div class="table_list" [joyrideStep]="steps[2].step" [title]="steps[2].title" [text]="steps[2].text">
+    <ng-container *ngIf="!loading; else rollist">
+      <div class="table_header d-none d-sm-block">
+        <div class="table_item_list">
+          <div class="row">
+            <div class="col">Nombre</div>
+            <div class="col">Permisos</div>
+            <div class="col-auto">
+              <div [style]="{width: '32px'}"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="table_body">
+        <div class="table_item_list" *ngFor="let role of roles | paginate: config">
+          <div class="row align-items-center">
+            <div class="col-sm">
+              <p class="mb-sm-0" [style]="{ fontWeight: '500' }">{{ role.name }}</p>
+            </div>
+            <div class="col col-sm">
+              <div class="d-flex flex-column">
+                <div class="text-muted" [style]="{ fontSize: '12px' }"
+                  *ngFor="let permission of role.permission_detail">
+                  {{ permission.name }}
+                </div>
+              </div>
+            </div>
+            <div class="col-auto">
+              <div class="btn-group" *ngIf="role.project && !disabled else elseBlock">
+                <div ngbDropdown display="dynamic" placement="bottom-right">
+                  <button type="button" class="btn btn-light opt_btn" ngbDropdownToggle [joyrideStep]="steps[3].step"
+                    [title]="steps[3].title" [text]="steps[3].text">
+                    <fa-icon [icon]="['fas', 'ellipsis-v']"></fa-icon>
+                  </button>
+                  <div ngbDropdownMenu class="dropdown-menu dropdown-menu-lg-end">
+                    <button ngbDropdownItem (click)="open(role)">Editar</button>
+                    <button ngbDropdownItem (click)="deleteRole(role)">Dar de baja</button>
+                  </div>
+                </div>
+              </div>
+  
+              <ng-template #elseBlock>
+                <div [style]="{width: '32px'}"></div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #rollist>
+      <div class="d-flex justify-content-center mb-4">
+        <div class="spinner-border text-secondary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </ng-template>
+
+    <div *ngIf="roles.length === 0 && !loading" class="col-12">
+      <p class="text-center text-muted fst-italic mb-0">Lista vacía</p>
+    </div>
+
+  </div>
+  <app-pagination [config]="config" [size]="roles.length"></app-pagination>
+</div>

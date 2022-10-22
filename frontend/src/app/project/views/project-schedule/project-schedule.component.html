@@ -1,0 +1,93 @@
+<div [joyrideStep]="steps[0].step" [title]="steps[0].title" [text]="steps[0].text">
+  <h3 class="title_schedule">Línea de Tiempo</h3>
+</div>
+
+<ng-container *ngIf="!loading; else actlist">
+  <div *ngIf="tasks.length > 0" class="row align-items-center mb-4">
+    <div class="col-sm">
+      <div class="d-grid d-sm-block mb-3 mb-sm-0">
+        <div class="d-grid d-lg-flex gap-2">
+          <a [routerLink]="['/manager/project',project_id,'planning']" class="btn btn-primary">Modificar planificación</a>
+          <div ngbDropdown>
+            <button class="btn btn-light d-block w-100" ngbDropdownToggle>Exportar</button>
+            <div ngbDropdownMenu>
+              <button ngbDropdownItem (click)="exportToPNG()">PNG</button>
+              <button ngbDropdownItem (click)="exportToXLSX()">Excel (XLSX)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm text-center text-sm-end">
+      <div class="btn-group btn-group-sm" role="group" aria-label="Basic outlined example">
+        <button type="button" class="btn btn-outline-primary" (click)="changeView('Quarter Day')" [ngClass]="activeMode === 'Quarter Day' ? 'active':''">Cuarto de día</button>
+        <button type="button" class="btn btn-outline-primary" (click)="changeView('Half Day')" [ngClass]="activeMode === 'Half Day' ? 'active':''">Medio día</button>
+        <button type="button" class="btn btn-outline-primary" (click)="changeView('Day')" [ngClass]="activeMode === 'Day' ? 'active':''">Día</button>
+        <button type="button" class="btn btn-outline-primary" (click)="changeView('Week') "[ngClass]="activeMode === 'Week' ? 'active':''">Semana</button>
+        <button type="button" class="btn btn-outline-primary" (click)="changeView('Month')" [ngClass]="activeMode === 'Month' ? 'active':''">Mes</button>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #actlist>
+  <div class="d-flex justify-content-center">
+      <div class="spinner-border text-secondary" role="status">
+      <span class="visually-hidden">Loading...</span>
+      </div>
+  </div>
+</ng-template>
+
+<app-empty 
+  *ngIf="tasks.length === 0 && !loading"
+  title="Sin actividades"
+  description="En este momento el proyecto no cuenta con ninguna iteración o actividad activa, desplázate hacia la pestaña de planificación para empezar a organizar tus tareas."
+></app-empty>
+
+<div class="relative">
+  <ng-container *ngIf="tasks.length > 0">
+    <div class="color_wrap">
+      <div class="row">
+        <div class="col-auto">
+          <div class="color_box">
+            <div class="d-flex align-items-center gap-2">
+              <div>
+                <span class="color bg-planning"></span>
+              </div>
+              <div class="flex-grow-1">
+                Planificación
+              </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <div>
+                <span class="color bg-design"></span>
+              </div>
+              <div class="flex-grow-1">
+                Diseño
+              </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <div>
+                <span class="color bg-coding"></span>
+              </div>
+              <div class="flex-grow-1">
+                Codificación
+              </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <div>
+                <span class="color bg-testing"></span>
+              </div>
+              <div class="flex-grow-1">
+                Pruebas
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  
+  <svg id="gantt"></svg>
+</div>
+

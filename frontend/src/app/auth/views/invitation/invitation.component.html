@@ -1,0 +1,43 @@
+<div class="card box_shadow mb-5">
+  <div class="card-body p-5">
+    <ng-container *ngIf="!loading">
+      <ng-container *ngIf="member; else empty">
+        <ng-container *ngIf="!member.active && !member.removed; else resp">
+          <h2 class="text-center mb-4">Invitación a proyecto</h2>
+          <h5 class="text-center mb-5">
+            Has sido invitado/a a colaborar en el proyecto: <b>SLDC proyecto</b>. Puedes aceptar o rechazar la invitación dando click en las siguientes opciones:
+          </h5>
+
+          <div class="d-flex justify-content-center gap-2">
+            <button type="button" [disabled]="resp_loading" class="btn btn-primary" (click)="accept()">Aceptar</button>
+            <button type="button" [disabled]="resp_loading" class="btn btn-danger" (click)="reject()">Rechazar</button>
+          </div>
+        </ng-container>
+        <ng-template #resp>
+          <div class="alert alert-success text-center" role="alert">
+            Invitación respondida
+          </div>
+          <div class="d-flex justify-content-center">
+            <a [routerLink]="['/manager/project/', member.project._id, 'planning']" *ngIf="member.active && !rejected" type="button" class="btn btn-secondary">Ir a proyecto</a>
+          </div>          
+        </ng-template>
+      </ng-container>
+      <ng-template #empty>
+        <div class="alert alert-danger text-center" role="alert">
+          La invitación no existe o ya ha sido respondida.
+        </div>
+      </ng-template>
+    </ng-container>
+    <ng-container *ngIf="loading">
+      <div class="d-flex justify-content-center">
+        <div class="spinner-border text-secondary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<p class="text-muted mb-0 fs-6 text-center">
+  &copy; {{ year }}. Todos los derechos reservados.
+</p>

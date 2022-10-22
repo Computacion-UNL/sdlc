@@ -1,0 +1,61 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Añadir actividad</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss()"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="card bordered item_box">
+    <div class="card-header">Actividades de reserva</div>
+    <div class="card-body p-4">
+      <div class="wrap_backlog">
+        <ul class="list-group mb-2" *ngFor="let activity of activities">
+          <li class="list-group-item px-3 py-2" (click)="setActivity(activity)" [ngClass]="activity === selected ? 'active':''">
+            <div class="d-flex gap-3 align-items-center">
+              <div class="drag_icon">
+                <fa-icon [icon]="['fas', 'bars']"></fa-icon>
+              </div>
+              <div class="flex-grow-1 text-truncate">
+                {{ activity.name }}
+              </div>
+              <div class="d-none d-sm-block rsp_pic">
+                <fa-icon [icon]="['fas', 'users']"></fa-icon>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <ul class="list-group mb-2" *ngIf="activities.length === 0">
+          <li class="list-group-item px-3 py-2">
+            <div class="d-flex gap-3 align-items-center">
+              <div class="flex-grow-1 text-truncate text-center">
+                <i class="text-muted">No hay actividades de reserva</i>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <hr />
+      <div class="d-grid gap-3 d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="newActivity()"
+        >
+          Nueva actividad
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="addActivity()"
+        >
+          Añadir
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

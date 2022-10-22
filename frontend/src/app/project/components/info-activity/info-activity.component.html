@@ -1,0 +1,51 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Actividad</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="card bordered item_box">
+    <div class="card-header">Datos de la actividad</div>
+    <div class="card-body p-4">
+      <div class="table-responsive mb-4">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th>Propiedad</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-muted">Nombre:</td>
+              <td>{{ activity?.name }}</td>
+            </tr>
+            <tr>
+              <td class="text-muted">Fecha de inicio:</td>
+              <td>{{ activity?.start }}</td>
+            </tr>
+            <tr>
+              <td class="text-muted">Fecha de finalización:</td>
+              <td>{{ activity?.end }}</td>
+            </tr>
+            <tr>
+              <td class="text-muted">Iteración:</td>
+              <td>{{ activity?.iteration?.name }}</td>
+            </tr>
+            <tr>
+              <td class="text-muted">Fase:</td>
+              <td>{{ phase }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="d-grid gap-3 d-flex justify-content-end">
+        <a [routerLink]="['/manager/project',project_id,'activity',activity.id]" class="btn btn-primary" (click)="activeModal.dismiss()">Ir a actividad</a>
+        <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

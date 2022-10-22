@@ -1,0 +1,81 @@
+.title_activity {
+    color: #848ba0;
+    font-size: 18px;
+    text-transform: uppercase;
+    font-weight: 600;
+    border-bottom: 1px solid #e0e2e4;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+  }
+
+.title_comp {
+    font-size: 13px;
+    color: #9898b1;
+}
+.lst_img {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    background-color: #D4F1F9;
+    color: #78A1A8;
+    border-radius: 100%;
+    text-align: center;
+    font-weight: 600;
+    font-size: 13px;
+}
+.activity_status {
+    background-color: #edf0f4;
+    .card-body {        
+        padding: 15px 25px;
+    }
+    .form-control {
+        background-color: #dbe0e7;
+    }
+}
+.list-group-item {
+    background-color: #edf0f4;
+    border: none;    
+    border-radius: 5px;
+}
+.danger_zone {
+    background-color: #ffd2d6;
+    padding: 25px 15px;
+    border-radius: 10px;
+}
+.attachment-button {
+    background-color: #edf0f4;
+    padding: 20px 25px;
+    font-size: 10px;
+}
+.attachment-text {
+    font-size: 12px;
+}
+.files_wrapper {
+    padding-bottom: 10px;
+    position: relative;
+    .card {
+        overflow: inherit;
+    }
+}
+.changes_wrapper {
+    max-height: 395px;
+    overflow-y: auto;
+    padding-right: 15px;
+}
+.breadcrumb-item,
+.breadcrumb-item a {
+    font-size: 12px;
+}
+.discard_msg {
+    background-color: #ffc8c8;
+    border: 1px solid red;
+    padding: 20px;
+    text-align: center;
+    border-radius: 5px;
+    .title {
+        font-size: 12px;
+        text-transform: uppercase;
+        font-weight: 600;
+        color: red;
+    }
+}

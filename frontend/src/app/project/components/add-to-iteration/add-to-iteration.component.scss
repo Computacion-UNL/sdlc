@@ -1,0 +1,28 @@
+.rsp_pic {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  background-color: #d4f1f9;
+  border-radius: 100%;
+  text-align: center;
+  font-size: 12px;
+  color: #78A1A8;
+}
+.drag_icon {
+  .ng-fa-icon {
+      color: #a8adb3;
+  }
+}
+.wrap_backlog {
+  max-height: 260px;
+  overflow: auto;
+  padding-right: 10px;
+}
+.list-group-item {
+  cursor: pointer;
+  &.active {
+    background-color: #3e4685;
+    color: #fff;
+    border-color: #3e4685;
+  }
+}

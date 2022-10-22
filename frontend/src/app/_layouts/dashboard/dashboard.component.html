@@ -1,0 +1,20 @@
+<div class="page-wrapper chiller-theme" [ngClass]="!mobile || opened ? 'toggled':''">
+  <app-main-menu-mobile 
+    (open)="openMenu()"
+  ></app-main-menu-mobile>
+  <app-main-menu 
+    (close)="closeMenu()"
+  ></app-main-menu>
+  <main class="page-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col">
+          <h2 class="text-uppercase">{{ titleService.title || 'Aplicación' }}</h2>
+          <p *ngIf="titleService.description">{{ titleService.description }}</p>
+          <hr class="mb-4">
+        </div>
+      </div>
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

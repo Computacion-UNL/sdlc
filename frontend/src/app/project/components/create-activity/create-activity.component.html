@@ -1,0 +1,23 @@
+<form
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+>
+  <div class="hidden_input_group">
+    <input
+      #refInput
+      formControlName="name"
+      type="text"
+      class="form-control"
+      id="activity_name"
+      [placeholder]="placeholder_text"
+      autocomplete="off"
+      [hidden]="!show"
+      (focusout)="toggle(false)"
+      [ngClass]="{ 'is-invalid': submitted && fa['name'].errors }"
+    />
+  </div>
+</form>
+
+<button *ngIf="!show" class="btn" (click)="toggle(true)">
+  <small class="text-muted">{{button_text}}</small>
+</button>

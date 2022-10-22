@@ -1,0 +1,46 @@
+.header-wrapper{
+  position: relative;
+  background-color: #15171C;
+  padding: 28px 15px;
+  border-radius: 5px;
+  display: flex;
+  cursor: pointer;
+}
+.sidebar-wrapper .sidebar-header .project-pic {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  padding: 2px;
+  border-radius: 10px;
+  margin-right: 15px;
+  background-color: #434860;
+  text-align: center;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #fff;
+  font-size: 18px;
+  
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.sidebar-wrapper .sidebar-header .project-info {
+  color: #fff;
+  font-size: 16px;
+  margin-left: 65px;
+}
+
+.__btn_back{
+  display: block;
+  text-align: left;
+  margin: 15px 20px 0;
+  font-size: 17px;
+  background-color: #15171C;
+  border-color: #15171C;
+  color: #D2D5DF;
+  padding: 15px 25px;
+}

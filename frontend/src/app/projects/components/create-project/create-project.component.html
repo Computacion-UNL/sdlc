@@ -1,0 +1,148 @@
+<div class="modal-header">
+  <h4 class="modal-title">Crear proyecto</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss()"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="info_block mb-4">
+    <p>
+      Estos detalles pueden ser cambiados más adelante en la configuración del
+      proyecto.
+    </p>
+    <p class="mb-0">
+      Además, este proyecto será visible únicamente para sus miembros, los
+      cuales tendrán un rol que especificará el acceso y los permisos
+      asignados.
+    </p>
+  </div>
+  <div class="card bordered item_box">
+    <div class="card-header">Detalles del proyecto</div>
+    <div class="card-body p-4">
+      <form [formGroup]="form" (ngSubmit)="onSubmitProject()">
+        <fieldset [disabled]="loading">
+          <div class="row mb-3">
+            <div class="col">
+              <label for="project_name" class="form-label"
+                >Nombre del proyecto</label
+              >
+              <input
+                formControlName="name"
+                type="text"
+                class="form-control"
+                id="project_name"
+                placeholder="Especificar un nombre"
+                autocomplete="off"
+                [ngClass]="{ 'is-invalid': submitted && fp['name'].errors }"
+              />
+              <div
+                *ngIf="submitted && fp['name'].errors"
+                class="invalid-feedback"
+              >
+                <div *ngIf="fp['name'].errors['required']">
+                  El nombre es requerido
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col">
+              <label for="project_description" class="form-label"
+                >Descripción</label
+              >
+              <div class="editor_wrapper">
+                <angular-editor
+                  id="project_description"
+                  [placeholder]="'Agrega una descripción...'" 
+                  formControlName="description"
+                  name="description"
+                  [config]="editorConfig"
+                ></angular-editor>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col">
+              <label for="project_objective" class="form-label"
+                >Objetivo General</label
+              >
+              <input
+                formControlName="general_objective"
+                type="text"
+                class="form-control"
+                id="project_objective"
+                autocomplete="off"
+                placeholder="Especificar un objetivo general"
+              />
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col">
+              <div class="col">
+                <label for="project_specifics" class="form-label"
+                  >Objetivos Específicos</label
+                >
+                <div class="row gx-2">
+                  <div class="col">
+                    <input
+                      [(ngModel)]="spefific_ob"
+                      [ngModelOptions]="{standalone: true}"
+                      type="text"
+                      class="form-control"
+                      id="project_specifics"
+                      autocomplete="off"
+                      placeholder="Agregar un objetivo específico"
+                    />
+                  </div>
+                  <div class="col-auto">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-sm"
+                      (click)="addObjective()"
+                    >
+                      <fa-icon [icon]="['fas','plus']"></fa-icon>
+                    </button>
+                  </div>
+                </div>                
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="objective" *ngFor="let objective of specific; let i = index;">
+                <div class="d-flex align-items-center">
+                  <div class="flex-grow-1">
+                    {{ objective.name }}
+                  </div>
+                  <div>
+                    <button class="btn btn-link py-0" (click)="removeObjective(i)">
+                      <fa-icon [icon]="['fas','trash']"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div class="d-grid gap-3 d-flex justify-content-end">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="activeModal.dismiss()"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Crear proyecto
+            </button>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>

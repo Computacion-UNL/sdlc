@@ -1,0 +1,25 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Editar Correo Electrónico</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+
+    <form [formGroup]="form_user" (ngSubmit)="submitUser()">
+        <label for="edit-profile_email" class="form-label">Correo Electrónico</label>
+        <input formControlName="email" type="email" class="form-control" placeholder="nombre@unl.edu.ec"
+            id="edit-profile_email" autocomplete="off"
+            [ngClass]="{ 'is-invalid': submitted_user && fu['email'].errors }" required />
+        <hr>
+        <div class="d-grid gap-3 mt-2 d-flex justify-content-end">
+            <button type="button" class="btn btn-light" (click)="activeModal.dismiss()">
+                Cerrar
+            </button>
+            <button type="button" class="btn btn-primary"  type="submit">
+                Aceptar
+            </button>
+        </div>
+    </form>
+
+</div>

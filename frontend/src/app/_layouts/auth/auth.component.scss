@@ -1,0 +1,13 @@
+.container-fluid,
+.row{
+    height: 100%;
+}
+
+.container-fluid{
+    background-image: url(../../../assets/img/bg_auth.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    overflow-y: auto;
+}

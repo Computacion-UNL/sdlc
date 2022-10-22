@@ -1,0 +1,248 @@
+<div class="row mb-4">
+  <div class="col">
+    <ul class="nav flex-column flex-sm-row gap-3">
+      <li class="nav-item">
+        <a
+          class="nav-link btn btn-light active"
+          aria-current="page"
+          [routerLink]="['/manager/project/', project_id, 'settings']"
+          >Proyecto</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link btn btn-link"
+          [routerLink]="['/manager/project/', project_id, 'members']"
+          >Colaboradores</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link btn btn-link"
+          aria-current="page"
+          [routerLink]="['/manager/project/', project_id, 'roles']"
+          >Roles</a
+        >
+      </li>
+    </ul>
+
+    <hr class="mt-4" />
+  </div>
+</div>
+
+<div
+  [joyrideStep]="steps[0].step"
+  [title]="steps[0].title"
+  [text]="steps[0].text"
+>
+  <div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+      <!--<div class="card bordered item_box mb-4" [joyrideStep]="steps[1].step" [title]="steps[1].title" [text]="steps[1].text">
+        <div class="card-body p-4 p-lg-5 text-center">
+          <input #fileInput type="file" hidden (change)="uploadImage($event)" accept=".jpg,.jpeg,.png">
+          <div class="d-sm-flex flex-row gap-3 align-items-center">
+            <div class="bd-higlight mb-3 mb-sm-0">
+              <div *ngIf="project?.image && img_url; else elseimg" class="prj_pic"
+                [style]="{ backgroundImage: 'url('+img_url+')' }"></div>
+              <ng-template #elseimg>
+                <div class="prj_pic">{{ getAcronym(project?.name) }}</div>
+              </ng-template>
+            </div>
+            <div class="flex-grow-1">
+              <div class="d-grid gap-2 col-sm-8 mx-auto">
+                <button class="btn btn-primary" type="button" (click)="fileInput.click()" [disabled]="loading_upload || loading_remove || disabled">
+                  <ng-container *ngIf="!loading_upload; else loadbtn1">
+                    Cambiar imagen
+                  </ng-container>
+                </button>
+                <button class="btn btn-light" type="button" (click)="deleteImage()" [disabled]="loading_upload || loading_remove || disabled">
+                  <ng-container *ngIf="!loading_remove; else loadbtn">
+                    Quitar imagen
+                  </ng-container>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>-->
+
+      <div
+        class="card bordered item_box"
+        [joyrideStep]="steps[1].step"
+        [title]="steps[1].title"
+        [text]="steps[1].text"
+      >
+        <div class="card-header">Proyectos Asociados</div>
+        <div class="card-body p-4">
+          <form [formGroup]="form" (ngSubmit)="onSubmitProject()">
+            <fieldset [disabled]="loading">
+              <div class="row mb-3">
+                <div class="col">
+                  <label for="project_name" class="form-label"
+                    >Nombre del proyecto</label
+                  >
+                  <input
+                    formControlName="name"
+                    type="text"
+                    class="form-control"
+                    id="project_name"
+                    placeholder="Especificar un nombre"
+                    autocomplete="off"
+                    [attr.disabled]="disabled ? '' : null"
+                    [ngClass]="{ 'is-invalid': submitted && fp['name'].errors }"
+                  />
+                  <div
+                    *ngIf="submitted && fp['name'].errors"
+                    class="invalid-feedback"
+                  >
+                    <div *ngIf="fp['name'].errors['required']">
+                      El nombre es requerido
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col">
+                  <label for="project_description" class="form-label"
+                    >Descripción</label
+                  >
+                  <div class="editor_wrapper">
+                    <angular-editor
+                      id="project_description"
+                      [placeholder]="'Agrega una descripción...'"
+                      [attr.disabled]="disabled ? '' : null"
+                      formControlName="description"
+                      name="description"
+                      [config]="editorConfig"
+                    ></angular-editor>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col">
+                  <label for="project_repository" class="form-label"
+                    >Repositorio</label
+                  >
+                  <input
+                    formControlName="repository"
+                    type="text"
+                    class="form-control"
+                    id="project_repository"
+                    autocomplete="off"
+                    placeholder="Ingrese el enlace de su repositorio (opcional)"
+                    [ngClass]="{
+                      'is-invalid': submitted && fp['repository'].errors
+                    }"
+                    [attr.disabled]="disabled ? '' : null"
+                  />
+                  <div *ngIf="fp['repository'].errors" class="invalid-feedback">
+                    <div *ngIf="fp['repository'].errors['pattern']">
+                      El enlace del repositorio es inválido
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col">
+                  <label for="project_objective" class="form-label"
+                    >Objetivo General</label
+                  >
+                  <input
+                    formControlName="general_objective"
+                    type="text"
+                    class="form-control"
+                    id="project_objective"
+                    autocomplete="off"
+                    placeholder="Especificar un objetivo general"
+                    [attr.disabled]="disabled ? '' : null"
+                  />
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col">
+                  <div class="col">
+                    <label for="project_specifics" class="form-label"
+                      >Objetivos Específicos</label
+                    >
+                    <div class="row gx-2">
+                      <div class="col">
+                        <input
+                          [(ngModel)]="spefific_ob"
+                          [ngModelOptions]="{standalone: true}"
+                          type="text"
+                          class="form-control"
+                          id="project_specifics"
+                          autocomplete="off"
+                          placeholder="Agregar un objetivo específico"
+                        />
+                      </div>
+                      <div class="col-auto">
+                        <button
+                          type="button"
+                          class="btn btn-primary btn-sm"
+                          (click)="addObjective()"
+                        >
+                          <fa-icon [icon]="['fas','plus']"></fa-icon>
+                        </button>
+                      </div>
+                    </div>                
+                  </div>
+                </div>
+              </div>
+              <hr *ngIf="specific.length > 0" />
+              <div class="row">
+                <div class="col-12">
+                  <div class="objective" *ngFor="let objective of specific; let i = index;">
+                    <div class="d-flex align-items-center">
+                      <div class="flex-grow-1">
+                        {{ objective.name }}
+                      </div>
+                      <div>
+                        <button class="btn btn-link py-0" (click)="removeObjective(i)">
+                          <fa-icon [icon]="['fas','trash']"></fa-icon>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr *ngIf="!disabled" />
+              <div class="d-grid gap-3 d-sm-flex justify-content-sm-between">
+                <button
+                  *ngIf="!disabled"
+                  type="button"
+                  class="btn btn-success"
+                  (click)="finishProject()"
+                  [joyrideStep]="steps[2].step"
+                  [title]="steps[2].title"
+                  [text]="steps[2].text"
+                >
+                  Finalizar Proyecto
+                </button>
+                <button *ngIf="!disabled" type="submit" class="btn btn-primary">
+                  Guardar cambios
+                </button>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadbtn>
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border text-secondary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #loadbtn1>
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border text-light" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,10 @@
+<div ngbDropdown placement="top-right" class="d-inline-block">
+    <button class="btn btn-outline-primary" id="options" ngbDropdownToggle>
+        <fa-icon [icon]="['fas','ellipsis-v']"></fa-icon>
+    </button>
+    <div ngbDropdownMenu aria-labelledby="options">
+        <div *ngFor="let option of options">
+            <button ngbDropdownItem (click)="action(option,data)">{{option}}</button>
+        </div>
+    </div>
+</div>

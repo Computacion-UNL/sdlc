@@ -1,0 +1,50 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Responsables</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss(this.assigned)"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="card bordered item_box">
+    <div class="card-header">Añadir responsables</div>
+    <div class="card-body p-4">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>Nombres</th>
+            <th>Opción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let member of members | paginate: config">
+            <td>
+              <p class="mb-0">{{ member.user?.name }} {{ member.user?.lastname }}</p>
+              <small class="text-muted">{{ member.user?.email }} - <b>{{ getRole(member._id) || member.role?.name }}</b></small>
+            </td>
+            <td>
+              <button type="button" class="btn" [ngClass]="member.assigned ? 'btn-light':'btn-primary'" (click)="toggleAssign(member._id)">{{member.assigned ? 'Quitar':'Asignar'}}</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="mb-4">
+        <app-pagination *ngIf="members.length > 0" [config]="config" [size]="members.length" [only_buttons]="true">
+        </app-pagination>
+      </div>
+      <div class="d-grid gap-3 d-flex justify-content-center">
+        <button
+          type="button"
+          class="btn btn-light"
+          (click)="activeModal.dismiss(this.assigned)"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

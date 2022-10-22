@@ -1,0 +1,112 @@
+<div class="row align-items-center mb-4">
+  <div class="col-sm-7 col-xl-6">
+    <div class="row">
+      <div class="col-sm-6 col-md-7 mb-2 mb-sm-0">
+        <form [formGroup]="form" (ngSubmit)="searchProjects()">
+          <fieldset>
+            <div class="search_input">
+              <span class="input-group-text">
+                <fa-icon [icon]="['fas', 'search']"></fa-icon>
+              </span>
+              <input type="text" class="form-control" placeholder="Buscar" formControlName="search" autocomplete="off" />
+            </div>
+          </fieldset>
+        </form>
+      </div>
+      <div class="col-sm-6 col-md-5 mb-2 mb-sm-0">
+        <div ngbDropdown class="d-grid d-sm-block">
+          <button class="btn btn-light" id="projectStatus" ngbDropdownToggle
+            [style]="{ paddingTop: '9px', paddingBottom: '9px' }">Filtrar</button>
+          <div ngbDropdownMenu aria-labelledby="projectStatus">
+            <button ngbDropdownItem (click)="getProjectsByStatus(true)">Proyectos En Curso</button>
+            <button ngbDropdownItem (click)="getProjectsByStatus(false)">Proyectos Finalizados</button>
+            <a *ngIf="view_teacher_item" [routerLink]="['/manager/projects-teacher']" ngbDropdownItem >Vista Docente</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-5 col-xl-6">
+    <div class="d-grid gap-3 d-md-flex justify-content-sm-end">
+      <button type="button" class="btn btn-primary" (click)="createProject()">
+        Crear proyecto
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-5">
+  <ng-container *ngIf="!loading; else prjlist">
+    <div class="col-sm-6 col-lg-4 col-xl-3 mb-4" *ngFor="let project of projects | paginate: config">
+      <div class="card bordered item_box">
+        <div class="card-body p-4">
+          <div class="d-flex gap-2 mb-3">
+            <div class="flex-grow-1">
+              <span class="icon_box">{{ getAcronym(project.name) | uppercase }}</span>
+            </div>
+            <div *ngIf="project.status === 'Finalizado'">
+              <button type="button" class="btn status-btn"
+                [ngClass]="project.reason?.includes('Cerrado Abrupto.') ? 'btn-danger':'btn-light'"
+                [title]="project.reason?.includes('Cerrado Abrupto.') ? 'Cerrado Abrupto':'Cerrado Normal'">
+                <ng-container *ngIf="project.reason?.includes('Cerrado Abrupto.'); else elseblck">
+                  <fa-icon [icon]="['fas','times']"></fa-icon>
+                </ng-container>
+                <ng-template #elseblck>
+                  <fa-icon [icon]="['fas','check']"></fa-icon>
+                </ng-template>
+              </button>
+            </div>
+            <div>
+              <div class="btn-group">
+                <div ngbDropdown display="dynamic" placement="bottom-right" *ngIf="project.is_owner || project.can_view_settings">
+                  <button type="button" class="btn btn-light opt_btn" ngbDropdownToggle>
+                    <fa-icon [icon]="['fas', 'ellipsis-v']"></fa-icon>
+                  </button>
+                  <div *ngIf="project.active" ngbDropdownMenu
+                    class="dropdown-menu dropdown-menu-lg-end">
+                    <button *ngIf="project.is_owner" ngbDropdownItem (click)="deleteProject(project)">Cerrar Proyecto</button>
+                    <a *ngIf="project.can_view_settings" ngbDropdownItem [routerLink]="['/manager/project/', project._id, 'settings']">Ajustes</a>
+                  </div>
+                  <div *ngIf="!project.active" ngbDropdownMenu
+                    class="dropdown-menu dropdown-menu-lg-end">
+                    <button ngbDropdownItem (click)="showReason(project)">Ver motivo de Cierre</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <a class="title_box mb-0 truncate" [routerLink]="['/manager/project/', project._id, 'planning']">{{ project.name
+            }}</a>
+          <p class="description_box mb-2 truncate">
+            <span *ngIf="project.description" [innerHTML]="removeHTMLTags(project.description)"></span>
+            <i *ngIf="!project.description">Sin descripción</i>
+          </p>
+          <span class="date_box truncate">Modificado {{ project.updated_at | date: "dd/MM/yy, h:mm a" }}</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #prjlist>
+    <div class="d-flex justify-content-center">
+      <div class="spinner-border text-secondary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </ng-template>
+
+  <div *ngIf="projects.length === 0 && !loading" class="col-12">
+    <app-empty
+      [title]="'No hay proyectos'"
+      [description]="'No se encontraron proyectos con los criterios de búsqueda seleccionados'"
+    ></app-empty>
+  </div>
+
+  <div class="text-center pt-3 mb-4" *ngIf="searching">
+    <button type="button" class="btn btn-secondary" (click)="clearSearch()">
+      Limpiar Búsqueda
+    </button>
+  </div>
+</div>
+
+<app-pagination [config]="config" [size]="projects.length"></app-pagination>

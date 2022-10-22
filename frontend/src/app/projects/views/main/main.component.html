@@ -1,0 +1,116 @@
+<div class="main">
+  <div class="row">
+    <div class="col-lg-7 order-last order-lg-first">
+      <div class="row">
+        <div class="col-sm-4 mb-4">
+          <div class="card bordered">
+            <div class="card-body text-center py-4">
+              <h6 class="card-title text-uppercase text-muted">Por Hacer</h6>
+              <p class="card-text fs-1 fw-bold text-muted lh-1">{{ numbers.pending }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4 mb-4">
+          <div class="card bordered">
+            <div class="card-body text-center py-4">
+              <h6 class="card-title text-uppercase text-muted">En Curso</h6>
+              <p class="card-text fs-1 fw-bold text-muted lh-1">{{ numbers.developing }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4 mb-4">
+          <div class="card bordered">
+            <div class="card-body text-center py-4 px-lg-2 px-xl-3">
+              <h6 class="card-title text-uppercase text-muted">Finalizadas</h6>
+              <p class="card-text fs-1 fw-bold text-muted lh-1">{{ numbers.finished }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">          
+        <div class="col">
+          <div class="card bordered item_box">
+            <div class="card-header">Proyectos Vinculados</div>
+            <div class="card-body">
+              <ng-container *ngIf="!loading_projects; else prjlist">
+                <a
+                  *ngFor="let project of projects"
+                  class="list-group-item list-group-item-action" 
+                  [routerLink]="['/manager/project/',project._id,'planning']">                  
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="flex-grow-1">
+                      {{ project.name }}
+                    </div>
+                    <div>
+                      <a [routerLink]="['/manager/project/', project._id, 'planning']" class="btn btn-light __b">
+                        <fa-icon class="profile-icon" [icon]="['fas','link']"></fa-icon>
+                      </a>
+                    </div>
+                  </div>
+                </a>
+              </ng-container>
+
+              <ng-template #prjlist>
+                <div class="d-flex justify-content-center">
+                  <div class="spinner-border text-secondary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+              </ng-template>
+              
+              <p class="text-center text-muted mb-0" *ngIf="projects?.length == 0 && !loading_projects"><i>No hay proyectos que mostrar</i></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-5 mb-4 mb-lg-0">
+      <div class="card bordered item_box">
+        <div class="card-header">Actividades Asignadas</div>
+        <div class="card-body assigned">
+          <ng-container *ngIf="!loading_activities; else actlist">
+            <div *ngFor="let activity of activities" class="card bordered item_activity">
+              <div class="card-body">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="flex-grow-1">
+                    <div class="card-subtitle mb-0">                        
+                      <a
+                        [routerLink]="[
+                          '/manager/project/',
+                          activity.project._id,
+                          'activity',
+                          activity._id
+                        ]"
+                      >
+                        <div>{{ activity.name }}</div>    
+                      </a>                    
+                      <div class="text-muted"><small>Finaliza el: {{  activity.finish_date | date: 'dd/MM/yy':"+0000" }}</small></div>
+                    </div>
+                    <div class="mb-0">
+                      <a [routerLink]="['/manager/project/',activity.project._id,'planning']">
+                        <small class="text-muted">{{ activity.project.name }}</small>
+                      </a>
+                    </div>
+                  </div>
+                  <div *ngIf="activity.status">
+                    <span class="badge text-uppercase" [ngClass]="setBackground(activity.status)">{{ activity.status }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-template #actlist>
+            <div class="d-flex justify-content-center">
+              <div class="spinner-border text-secondary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          </ng-template>
+          
+          <p class="text-center text-muted mb-0" *ngIf="activities?.length == 0 && !loading_activities"><i>No hay actividades pendientes</i></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

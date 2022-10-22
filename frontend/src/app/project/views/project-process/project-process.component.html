@@ -1,0 +1,194 @@
+<div class="row align-items-center mb-4">
+  <div class="col-sm-8 mb-3 mb-sm-0">
+    <div class="it_header">
+      <small>Iteración actual:</small>
+      <h4 class="mb-0">{{ this.iteration?.name }}</h4>
+    </div>
+  </div>
+  <div class="col-sm-4 text-sm-end">
+    <button type="button" class="btn btn-light" (click)="goTo(['../../../','schedule'])" [joyrideStep]="steps[0].step"
+      [title]="steps[0].title" [text]="steps[0].text">
+      Ver cronograma
+    </button>
+  </div>
+</div>
+<hr class="mb-4">
+<div class="row">
+  <div class="col-lg-7 col-xl-8" [joyrideStep]="steps[1].step" [title]="steps[1].title" [text]="steps[1].text">
+    <ng-container *ngIf="!loading_activities; else itelist">
+      <ul class="list-group mb-3">
+        <li class="list-group-item">
+          <div class="d-sm-flex gap-3 align-items-center">
+            <div class="px-2 py-1 p-sm-2 flex-grow-1 iteration_name">
+              {{ 'Fase '+phase.pos+' - '+phase.name }}
+            </div>
+            <div class="px-2 py-1 p-sm-2 text-muted">
+              <b>Progreso:</b> {{ countf }} de {{ countt }} actividades
+            </div>
+          </div>
+        </li>
+
+        <li class="list-group-item bg_iteration phases">
+          <div dndDropzone dndEffectAllowed="copyMove" (dndDrop)="
+              onDrop(
+                $event,
+                phase_activities,
+                iteration._id,
+                phase.code
+              )
+            ">
+            <div class="dnd_dropzone text-muted text-center mb-2" dndPlaceholderRef>
+              Mover aquí
+            </div>
+            <ul *ngFor="let activity of phase_activities" class="list-group mb-2" [dndDraggable]="activity"
+              [dndDisableIf]="true" dndEffectAllowed="move" (dndStart)="onDragStart($event)" (dndCopied)="
+                onDragged(activity, phase_activities, 'copy')
+              " (dndLinked)="
+                onDragged(activity, phase_activities, 'link')
+              " (dndMoved)="
+                onDragged(activity, phase_activities, 'move')
+              " (dndCanceled)="
+                onDragged(activity, phase_activities, 'none')
+              " (dndEnd)="onDragEnd($event)">
+              <li class="list-group-item px-3 py-2">
+                <div class="d-flex gap-3 align-items-center">
+                  <div class="flex-grow-1">
+                    <div class="d-sm-flex gap-3 align-items-center">
+                      <div class="flex-grow-1 mb-1 mb-sm-0">
+                        <a class="activity_link" [routerLink]="[
+                            '/manager/project',
+                            project_id,
+                            'activity',
+                            activity._id
+                          ]">{{ activity.name }}</a>
+                      </div>
+                      <div *ngIf="activity.status">
+                        <span class="badge text-uppercase" [ngClass]="setBackground(activity.status)">
+                          {{ activity.status }}
+                        </span>
+                      </div>
+                      <!-- <div class="d-none d-sm-block rsp_pic">
+                        <fa-icon [icon]="['fas', 'users']"></fa-icon>
+                      </div> -->
+                    </div>
+                  </div>
+                </div>
+                <span [ngClass]="activity.created_by_manager ? 'created_manager' : 'created_collaborator'"
+                  class="created_container">
+                </span>
+              </li>
+            </ul>
+            <div *ngIf="phase_activities?.length === 0" class="dnd_dropzone text-muted text-center mb-2">
+              Lista vacía
+            </div>
+          </div>
+        </li>
+      </ul>
+    </ng-container>
+    <div class="d-grid gap-2 d-flex justify-content-end mb-4 mb-lg-0">
+      <button class="btn btn-light" type="button" [disabled]="loading_phase" *ngIf="phase.pos > 1"
+        (click)="previousPhase()">
+        <ng-container *ngIf="!loading_phase; else loadbtn">
+          Fase anterior
+        </ng-container>
+      </button>
+      <button class="btn btn-primary" type="button" [disabled]="percentage < 80 || loading_phase" *ngIf="phase.pos < 4"
+        (click)="nextPhase()">
+        <ng-container *ngIf="!loading_phase; else loadbtn1">
+          Siguiente fase
+        </ng-container>
+      </button>
+    </div>
+  </div>
+  <div class="col-lg-5 col-xl-4">
+    <ng-container *ngIf="!loading_backlog; else itelist">
+      <ul class="list-group mb-3" [joyrideStep]="steps[2].step" [title]="steps[2].title" [text]="steps[2].text">
+        <li class="list-group-item">
+          <div class="d-sm-flex gap-3 align-items-center">
+            <div class="px-2 py-1 p-sm-2 flex-grow-1 iteration_name">
+              Reserva de actividades
+            </div>
+          </div>
+        </li>
+        <li class="list-group-item bg_iteration phases">
+          <div dndDropzone dndEffectAllowed="copyMove" class="wrap_dropzone mb-2" (dndDrop)="
+              onDrop(
+                $event,
+                backlog,
+                null,
+                null
+              )
+            ">
+            <div class="dnd_dropzone text-muted text-center mb-2" dndPlaceholderRef>
+              Mover aquí
+            </div>
+            <ul *ngFor="let activity of backlog" class="list-group mb-2" [dndDraggable]="activity"
+              dndEffectAllowed="move" (dndStart)="onDragStart($event)" (dndCopied)="
+                onDragged(activity, backlog, 'copy')
+              " (dndLinked)="
+                onDragged(activity, backlog, 'link')
+              " (dndMoved)="
+                onDragged(activity, backlog, 'move')
+              " (dndCanceled)="
+                onDragged(activity, backlog, 'none')
+              " (dndEnd)="onDragEnd($event)">
+              <li class="list-group-item px-3 py-2">
+                <div class="d-flex gap-3 align-items-center">
+                  <div class="drag_icon">
+                    <fa-icon [icon]="['fas', 'bars']"></fa-icon>
+                  </div>
+                  <div class="flex-grow-1">
+                    <div class="d-sm-flex gap-3 align-items-center">
+                      <div class="flex-grow-1 mb-1 mb-sm-0">
+                        <a class="activity_link" [routerLink]="[
+                            '/manager/project',
+                            project_id,
+                            'activity',
+                            activity._id
+                          ]">{{ activity.name }}</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <div *ngIf="backlog?.length === 0" class="dnd_dropzone text-muted text-center mb-2">
+              Lista vacía
+            </div>
+          </div>
+          <app-create-activity [project_id]="project_id" (refresh)="addToBacklog($event)"></app-create-activity>
+        </li>
+      </ul>
+    </ng-container>
+    <div class="d-grid gap-2 mb-2" [joyrideStep]="steps[3].step" [title]="steps[3].title" [text]="steps[3].text">
+      <button type="button" class="btn btn-danger" (click)="finishIteration()">Finalizar iteración</button>
+    </div>
+    <p class="px-2 mb-0 text-muted">
+      Al finalizar la iteración, se generará un reporte, el cual se podrá visualizar desde la opción “Reportes”
+    </p>
+  </div>
+</div>
+
+<ng-template #itelist>
+  <div class="d-flex justify-content-center mb-4">
+    <div class="spinner-border text-secondary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #loadbtn>
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border text-secondary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #loadbtn1>
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border text-light" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-template>

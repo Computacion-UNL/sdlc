@@ -1,0 +1,23 @@
+<div class="page-wrapper chiller-theme" [ngClass]="!mobile || opened ? 'toggled':''">
+  <app-project-menu-mobile
+    (open)="openMenu()"
+  ></app-project-menu-mobile>
+  <app-project-menu 
+    (close)="closeMenu()"
+  ></app-project-menu>
+  <main class="page-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col">
+          <h2 class="text-uppercase">{{ titleService.title || 'Aplicación' }}</h2>
+          <button class="btn mb-0 pt-0" (click)="startTour()">
+            <fa-icon [icon]="['fas','question-circle']" size="2x"></fa-icon>
+          </button>
+          <p *ngIf="titleService.description">{{ titleService.description }}</p>
+          <hr class="mb-4">
+        </div>
+      </div>
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

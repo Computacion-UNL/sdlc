@@ -1,0 +1,62 @@
+<button class="btn" (click)=open(content)>
+  <small class="text-muted">+ {{ type == 'file' ? 'Agregar archivo':'Agregar enlace' }}</small>
+</button>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Adjuntar Elemento</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="card bordered item_box">
+      <div class="card-header">Información del elemento</div>
+      <div class="card-body p-4">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <fieldset [disabled]="loading">    
+            <div *ngIf="show" class="form-group mb-3">
+              <label for="attachment_url" class="form-label">Enlace Externo</label>
+              <div class="input-group">
+                <input type="url" formControlName="url" class="form-control" name="attachment_url"
+                  [ngClass]="{ 'is-invalid': submitted && fa['url'].errors }" placeholder="https://www.example.com">
+                <div *ngIf="fa['url'].errors" class="invalid-feedback">
+                  <div *ngIf="fa['url'].errors['required']">El campo es requerido</div>
+                  <div *ngIf="fa['url'].errors['pattern']">El enlace es inválido</div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="!show" class="form-group mb-3">
+              <label for="attachment_file" class="form-label">Adjuntar Archivo Externo</label>
+              <div class="input-group">
+                <input type="file" formControlName="file" class="form-control" name="attachment_file" accept=".jpg,.jpeg,.png,.pdf"
+                  [ngClass]="{ 'is-invalid': submitted && fa['file'].errors }" (change)="uploadFile($event)">
+                <div class="form-text">Archivos permitidos: .png, .jpeg, .jpg y .pdf</div>
+                <div *ngIf="fa['file'].errors" class="invalid-feedback">
+                  <div *ngIf="fa['file'].errors['required']">El campo es requerido</div>
+                </div>
+              </div>
+            </div>        
+            <div class="form-group">
+              <label for="attachment_name" class="form-label">Nombre de Elemento Adjunto</label>
+              <div class="input-group">
+                <input type="text" formControlName="name" class="form-control" name="attachment_name"
+                  [ngClass]="{ 'is-invalid': submitted && fa['name'].errors }" placeholder="Nombre Elemento Externo">
+                <div *ngIf="fa['name'].errors" class="invalid-feedback">
+                  <div *ngIf="fa['name'].errors['required']">El campo es requerido</div>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="d-grid gap-3 d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary">Guardar</button>
+              <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancelar</button>
+              <button *ngIf="attachment._id" type="button" class="btn btn-danger"
+                (click)="deleteAttachment(attachment)">Dar de baja</button>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,92 @@
+.progress-project {
+    &-bordered {
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px solid #c1c4c9;
+        border-radius: 10px;
+    }
+
+    &-header {
+        padding: 3px 14px;
+        color: #8995ac;
+        font-size: 13px;
+    }
+
+    &-separator {
+        height: 1.3px;
+        background-color: #c1c4c9;
+        margin: 5px;
+    }
+
+    &-container-item {
+        padding: 0 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    &-general {
+        height: 165px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    &-irregular {
+        height: 125px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    &-activity {
+        padding: 10px;
+        max-width: 350px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    &-collaborators {
+        padding: 9px;
+        line-height: 40px;
+        color: #78A1A8;
+        border-radius: 100%;
+        text-align: center;
+        font-weight: 600;
+        font-size: 12px;
+        background-color: #D4F1F9;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+
+    &-badge {
+        max-width: 110px;
+        padding: 5px 0px;
+        text-align: center;
+        border-radius: 10px;
+    }
+
+    &-buttons {
+        margin-top: 10px;
+        display: flex;
+        justify-content: end;
+
+        >button {
+            margin: 5px;
+        }
+    }
+}
+
+.pending {
+    background-color: #f0f3f8;
+    color: #3e4685;
+}
+
+.develop {
+    background-color: #d4f1f9;
+    color: #3e4685;
+}
+
+.finish {
+    background-color: #2be977;
+    color: #0f4a2f;
+}

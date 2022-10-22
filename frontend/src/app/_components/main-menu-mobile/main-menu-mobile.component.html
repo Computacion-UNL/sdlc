@@ -1,0 +1,33 @@
+<div id="show-sidebar">
+  <button type="button" class="btn btn-light mb-5" (click)="openMenu()">
+    <fa-icon [icon]="['fas','bars']"></fa-icon>
+  </button>
+
+  <ul class="list-unstyled">    
+    <li class="mb-4">
+      <a routerLink="/manager/home" routerLinkActive="active">
+        <fa-icon [icon]="['fas','th-large']"></fa-icon>
+      </a>
+    </li>
+    <li class="mb-4">
+      <a routerLink="/manager/projects" routerLinkActive="active">
+        <fa-icon [icon]="['fas','folder-open']"></fa-icon>
+      </a>
+    </li>
+    <li class="mb-4">
+      <a routerLink="/manager/profile" routerLinkActive="active">
+        <fa-icon [icon]="['fas','user-circle']"></fa-icon>
+      </a>
+    </li>
+    <li *ngIf="currentUser?.admin" class="mb-4">
+      <a routerLink="/manager/users" routerLinkActive="active">
+        <fa-icon [icon]="['fas','users']"></fa-icon>
+      </a>
+    </li>
+    <li>
+      <a href="#" (click)="logout($event)">
+        <fa-icon [icon]="['fas','power-off']"></fa-icon>
+      </a>
+    </li>
+  </ul>
+</div>

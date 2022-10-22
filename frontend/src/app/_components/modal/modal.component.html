@@ -1,0 +1,40 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ data?.title }}</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="activeModal.dismiss()"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div [innerHTML]="data?.message"></div>
+  <input
+    *ngIf="data?.withReason"
+    type="text"
+    class="form-control"
+    name="reason"
+    [(ngModel)]="value"
+    [placeholder]="(data?.placeholder !== null && data?.placeholder !== undefined) ? data?.placeholder : 'Ingresa el motivo...'"
+    autocomplete="off"
+  />
+
+  <hr>
+  <div class="d-grid gap-2 d-flex justify-content-end">
+    <button *ngIf="!data?.denyOption"
+      type="button"
+      class="btn btn-light"
+      (click)="activeModal.dismiss()"
+    >
+      Cerrar
+    </button>
+    <button type="button" class="btn btn-primary" (click)="acept()">
+      Aceptar
+    </button>
+    <button *ngIf="data?.denyOption" type="button" class="btn btn-danger" (click)="deny()">
+      Denegar
+    </button>
+  </div>
+</div>

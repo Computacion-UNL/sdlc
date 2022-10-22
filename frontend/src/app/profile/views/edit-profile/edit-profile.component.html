@@ -1,0 +1,277 @@
+
+<ng-template #loadspn>
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border spinner-border-sm" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-template>
+
+<div class="row justify-content-center mb-4">
+  <div class="col-md-11 col-lg-7 col-xl-6">
+    <div class="card bordered item_box mb-4">
+      <div class="card-body p-3 p-sm-5 text-center">
+        <input
+          #fileInput
+          type="file"
+          hidden
+          accept=".jpg,.jpeg,.png"
+          (change)="uploadImage($event)"
+        />
+        <div class="d-sm-flex flex-row gap-3 align-items-center">
+          <div class="bd-higlight">
+            <img
+              *ngIf="user.image && url_user; else elseimg"
+              [src]="url_user"
+              class="usr_img mb-2 mb-sm-0"
+              alt="Foto de Perfil de Usuario"
+            />
+            <ng-template #elseimg>
+              <img
+                [src]="'../../../../'+(prod ? 'sdlc/':'')+'assets/img/user.jpg'"
+                class="usr_img mb-2 mb-sm-0"
+                alt="Foto de Perfil de Usuario"
+              />
+            </ng-template>
+          </div>
+          <div class="flex-grow-1">
+            <div class="d-grid gap-2 col-8 mx-auto">
+              <button class="btn btn-primary" type="button" [disabled]="loading_upload || loading_delete_img" (click)="fileInput.click()">
+                <ng-container *ngIf="!loading_upload; else loadspn">
+                  <span>Cambiar Imagen</span>
+                </ng-container>
+              </button>
+              <button class="btn btn-light" type="button" [disabled]="loading_delete_img || loading_upload" (click)="deleteImage()">                
+                <ng-container *ngIf="!loading_delete_img; else loadspn">
+                  <span>Quitar Imagen</span>
+                </ng-container>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card bordered item_box mb-4">      
+      <div class="card-header">Datos Personales</div>
+      <div class="card-body p-4">
+        <form [formGroup]="form_user" (ngSubmit)="submitUser()">
+          <fieldset [disabled]="loading_user">
+            <div class="row mb-3">
+              <div class="col-12 col-sm-6">
+                <label for="edit-profile_name" class="form-label">Nombres</label>
+                <input
+                  formControlName="name"
+                  type="text"
+                  class="form-control"
+                  placeholder="Tus nombres"
+                  id="edit-profile_name"
+                  autocomplete="off"
+                  [ngClass]="{ 'is-invalid': submitted_user && fu['name'].errors }"
+                  required
+                />
+                <div
+                  *ngIf="submitted_user && fu['name'].errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="fu['name'].errors['required']">
+                    El nombre es requerido
+                  </div>
+                  <div *ngIf="fu['name'].errors['whitespace']">
+                    No se permiten espacios en blanco
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-sm-6">
+                <label for="edit-profile_lastname" class="form-label">Apellidos</label>
+                <input
+                  formControlName="lastname"
+                  type="text"
+                  class="form-control"
+                  placeholder="Tus apellidos"
+                  id="edit-profile_lastname"
+                  autocomplete="off"
+                  [ngClass]="{ 'is-invalid': submitted_user && fu['lastname'].errors }"
+                  required
+                />
+                <div
+                  *ngIf="submitted_user && fu['lastname'].errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="fu['lastname'].errors['required']">
+                    El apellido es requerido
+                  </div>                  
+                  <div *ngIf="fu['lastname'].errors['whitespace']">
+                    No se permiten espacios en blanco
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <label for="edit-profile_email" class="form-label"
+                  >Correo Electrónico</label
+                >
+                <input
+                  formControlName="email"
+                  type="email"
+                  class="form-control"
+                  placeholder="nombre@unl.edu.ec"
+                  id="edit-profile_email"
+                  autocomplete="off"
+                  [ngClass]="{ 'is-invalid': submitted_user && fu['email'].errors }"
+                  required
+                />
+                <div class="form-text ps-1">Para actualizar tu correo electrónico, debes contactar a un administrador.</div>
+                <div
+                  *ngIf="submitted_user && fu['email'].errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="fu['email'].errors['required']">
+                    El correo es requerido
+                  </div>
+                  <div *ngIf="fu['email'].errors['email']">
+                    El correo debe ser válido
+                  </div>
+                  <div *ngIf="fu['email'].errors['pattern']">
+                    El correo deber ser institucional
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr />
+            <div class="d-grid gap-3 d-flex justify-content-end">
+              <button class="btn btn-primary edit-profile-form-button" type="submit">
+                <ng-container *ngIf="!loading_user; else loadspn">
+                  <span>Guardar cambios</span>
+                </ng-container>
+              </button>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+    <div class="card bordered item_box mb-4">
+      <div class="card-header">Editar Contraseña</div>
+      <div class="card-body p-4">
+        <form [formGroup]="form_password" (ngSubmit)="submitPassword()">
+          <fieldset [disabled]="loading_password">
+            <div class="row mb-3">
+              <div class="col">
+                <label for="edit-profile_oldPassword" class="form-label"
+                  >Antigua Contraseña</label
+                >
+                <input
+                  formControlName="oldPassword"
+                  type="password"
+                  class="form-control"
+                  placeholder="Antigua Contraseña"
+                  id="edit-profile_oldPassword"
+                  autocomplete="off"
+                  [ngClass]="{
+                    'is-invalid': submitted_password && fp['oldPassword'].errors
+                  }"
+                />
+                <div
+                  *ngIf="submitted_password && fp['oldPassword'].errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="fp['oldPassword'].errors['required']">
+                    Campo Requerido
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col">
+                <label for="edit-profile_newPassword" class="form-label"
+                  >Nueva Contraseña</label
+                >
+                <input
+                  formControlName="newPassword"
+                  type="password"
+                  class="form-control"
+                  placeholder="Nueva Contraseña"
+                  id="edit-profile_newPassword"
+                  autocomplete="off"
+                  [ngClass]="{
+                    'is-invalid': submitted_password && fp['newPassword'].errors
+                  }"
+                />
+                <div
+                  *ngIf="submitted_password && fp['newPassword'].errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="fp['newPassword'].errors['required']">
+                    Campo Requerido
+                  </div>
+                  <div *ngIf="fp['newPassword'].errors['whitespace']">
+                    Contraseña no válida
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <label for="edit-profile_confirmPassword" class="form-label"
+                  >Confirmar Contraseña</label
+                >
+                <input
+                  formControlName="confirm_password"
+                  type="password"
+                  class="form-control"
+                  placeholder="Confirmar Contraseña"
+                  id="edit-profile_confirmPassword"
+                  autocomplete="off"
+                  [ngClass]="{
+                    'is-invalid': submitted_password && fp['confirm_password'].errors || form_password.errors?.['notmatched'] && (form_password.touched || form_password.dirty)
+                  }"
+                />
+                <div
+                  *ngIf="submitted_password && fp['confirm_password'].errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="fp['confirm_password'].errors['required']">
+                    Campo Requerido
+                  </div>
+                  <div *ngIf="fp['confirm_password'].errors['whitespace']">
+                    Contraseña no válida
+                  </div>
+                </div>
+                <div *ngIf="form_password.errors?.['notmatched'] && (form_password.touched || form_password.dirty)" class="invalid-feedback">
+                  <div *ngIf="form_password.errors?.['notmatched'] && (form_password.touched || form_password.dirty)">La contraseña de confirmación no coincide</div>
+                </div>
+              </div>
+            </div>
+            <hr />
+            <div class="d-grid gap-3 d-flex justify-content-end">
+              <button class="btn btn-primary edit-profile-form-button" type="submit">
+                <ng-container *ngIf="!loading_password; else loadspn">
+                  <span>Guardar cambios</span>
+                </ng-container>
+              </button>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+    <div class="card bordered item_box">
+      <div class="card-header">Dar de baja a cuenta</div>
+      <div class="card-body p-4">
+        <p class="text-muted">Recuerda que esta acción es irreversible y todos los datos de la cuenta ya no estarán disponibles.</p>
+        <hr />
+        <div class="d-grid gap-3 d-flex justify-content-end">
+          <button
+            class="btn btn-danger edit-profile-delete-button"
+            type="button"
+            (click)="deleteUser()"
+            [disabled]="loading_delete"
+          >            
+            <ng-container *ngIf="!loading_delete; else loadspn">
+              <span>Dar de baja</span>
+            </ng-container>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

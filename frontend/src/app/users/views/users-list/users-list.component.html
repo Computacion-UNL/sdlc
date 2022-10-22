@@ -1,0 +1,112 @@
+<div class="row">
+  <div class="col-sm-5 col-xl-3">
+    <form [formGroup]="form" (ngSubmit)="searchUsers()">
+      <fieldset>
+        <div class="search_input mb-3">
+          <span class="input-group-text">
+            <fa-icon [icon]="['fas', 'search']"></fa-icon>
+          </span>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Buscar"
+            formControlName="search"
+            autocomplete="off"
+          />
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>
+
+<ng-container *ngIf="!loading; else usrlist">
+  <div class="table_list">
+    <div class="table_header d-none d-lg-block" *ngIf="users.length > 0 && !loading">
+      <div class="table_item_list">
+        <div class="row">
+          <div class="col-lg-auto"><div [style]="{width: '40px'}"></div></div>
+          <div class="col-lg">Nombre</div>
+          <div class="col-lg-2">Rol</div>
+          <div class="col-lg-2">Estado</div>
+          <div class="col-lg-2">Modificado</div>
+          <div class="col-lg-auto"><div [style]="{width: '32px'}"></div></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="table_body">
+      <div class="row">
+        <div class="col-sm-6 col-lg-12" *ngFor="let user of users | paginate: config">
+          <div class="table_item_list">
+            <div class="row align-items-center">
+              <div class="col-lg-auto">
+                <div class="lst_img mb-3 mb-lg-0">{{ user.name ? user.name.charAt(0):'' }}{{ user.lastname ? user.lastname.charAt(0):'' }}
+                </div>
+              </div>
+              <div class="col-lg">
+                <p class="mb-0" [style]="{ fontWeight: '500' }">{{ user.name }} {{ user.lastname }} </p>
+                <span class="text-muted d-block d-lg-inline mb-3 mb-lg-0" [style]="{ fontSize: '12px' }">{{ user.email }}</span>
+              </div>
+              <div class="col-7 col-lg-2 mb-3 mb-lg-0">
+                <span [style]="{ fontWeight: '500', color: '#7D8BA0' }">{{ user.admin ? "Administrador" : "Usuario" }}</span>
+              </div>
+              <div class="col-5 col-lg-2 text-end text-lg-start mb-3 mb-lg-0">
+                <span
+                  class="badge text-uppercase mb-1 me-1"
+                  [ngClass]="user.active ? 'bg-success' : 'bg-danger'"
+                  >{{ user.active ? "Activo" : "Inactivo" }}</span
+                >
+                <span
+                  class="badge text-uppercase"
+                  [ngClass]="user.verified ? 'bg-success' : 'bg-secondary'"
+                  >{{ user.verified ? "Validado" : "Sin validar" }}</span
+                >
+              </div>
+              <div class="col col-lg-2"><span [style]="{ fontSize: '12px' }">{{ user.updated_at | date: "dd/MM/yy, h:mm a" }}</span></div>
+              <div class="col-auto">
+                <div class="btn-group">
+                  <div ngbDropdown display="dynamic" placement="bottom-right">
+                    <button type="button" class="btn btn-light opt_btn" ngbDropdownToggle>
+                      <fa-icon [icon]="['fas', 'ellipsis-v']"></fa-icon>
+                    </button>
+                    <div ngbDropdownMenu class="dropdown-menu dropdown-menu-lg-end">
+                      <button ngbDropdownItem (click)="userToggle(user)">{{ user.active ? 'Dar de baja':'Restaurar' }}</button>
+                      <button ngbDropdownItem (click)="updateEmail(user)">Editar Correo Electrónico</button>
+                      <button  ngbDropdownItem (click)="adminToggle(user)">
+                        {{ user.admin ? 'Asignar como Usuario' : 'Asignar como Administrador'}}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #usrlist>
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border text-secondary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-template>
+
+<div *ngIf="users.length === 0 && !loading" class="col-12">
+  <app-empty
+    [title]="'Lista vacía'"
+    [description]="'No se encontraron usuarios registrados'"
+  ></app-empty>
+</div>
+
+<div class="text-center pt-3 mb-4" *ngIf="searching">
+  <button type="button" class="btn btn-secondary" (click)="clearSearch()">
+    Limpiar Búsqueda
+  </button>
+</div>
+
+
+<app-pagination [config]="config" [size]="users.length"></app-pagination>

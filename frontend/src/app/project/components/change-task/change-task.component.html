@@ -1,0 +1,30 @@
+<div *ngIf="show">
+  <li class="list-group-item mb-2" >
+    <div class="d-flex gap-2">
+      <div>
+        <div class=" checkbox">
+          <input class="form-check-input me-1" type="checkbox" [checked]="checked" [value]="task._id" (change)="updateTaskStatus($event)" >
+        </div>
+      </div>
+      <div class="task-name text-muted" (click)="toggle(false)">
+        {{task.task}}
+      </div>
+    </div>
+  </li>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="hidden_input_group">
+    <input #refInput formControlName="name" type="text" class="form-control" placeholder="Editar tarea"
+      autocomplete="off" [hidden]="show"
+      [ngClass]="{ 'is-invalid': submitted && fa['name'].errors }" />
+    <div class="d-flex gap-3">
+      <button type="button" class="btn btn-link text-danger pt-0" [hidden]="show">
+        <small class="btn-text" (click)="deleteTask(task)">Dar de baja</small>
+      </button>
+      <button type="button" class="btn btn-link text-secondary pt-0" [hidden]="show">
+        <small class="text-muted" (click)="toggle(true)">Descartar</small>
+      </button>
+    </div>
+  </div>
+</form>

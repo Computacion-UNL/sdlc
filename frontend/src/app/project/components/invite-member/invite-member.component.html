@@ -1,0 +1,105 @@
+<button type="button" class="btn btn-primary" (click)="open(content)">
+  Añadir colaboradores
+</button>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Invitar colaborador</h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="modal.dismiss()"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="card bordered item_box">
+      <div class="card-header">Detalles del usuario</div>
+      <div class="card-body p-4">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <fieldset [disabled]="loading">
+            <div class="row mb-3">
+              <div class="col">
+                <label for="member_email" class="form-label"
+                  >Correo electrónico</label
+                >
+                <ng-template #rt let-r="result" let-t="term">
+                  <ngb-highlight class="d-block" [result]="r.name+' '+r.lastname" [term]="t"></ngb-highlight>
+                  <small>{{ r.email }}</small>
+                </ng-template>
+                
+                <input
+                  formControlName="email"
+                  type="email"
+                  class="form-control"
+                  id="member_email"
+                  placeholder="Especificar un nombre"
+                  autocomplete="off"
+                  [ngbTypeahead]="search"
+                  [resultTemplate]="rt"
+                  [inputFormatter]="formatter"
+                  [editable]='false'
+                  [ngClass]="{ 'is-invalid': submitted && f['email'].errors }"
+                />
+                <div class="invalid-feedback" *ngIf="searchFailed">Hubo un error al intentar buscar...</div>
+                <div
+                  *ngIf="submitted && f['email'].errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="f['email'].errors['required']">
+                    El email es requerido
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <label for="member_role" class="form-label">Rol</label>
+                <div class="loading_wrap">
+                  <div *ngIf="loading_roles" class="spinner-border spinner-border-sm text-secondary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+
+                  <select
+                    formControlName="role"
+                    id="member_role"
+                    class="form-select"
+                    [ngClass]="{ 'is-invalid': submitted && f['role'].errors }"
+                  >
+                    <option [value]="null" selected disabled>Seleccionar rol</option>
+                    <ng-container *ngFor="let role of roles">
+                      <option [value]="role._id" *ngIf="role.slug !== 'manager'">{{ role.name }}</option>
+                    </ng-container>
+                  </select>                
+                  <div
+                    *ngIf="submitted && f['role'].errors"
+                    class="invalid-feedback"
+                  >
+                    <div *ngIf="f['role'].errors['required']">
+                      El rol es requerido
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr />
+            <div class="d-grid gap-3 d-flex justify-content-end">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="modal.dismiss()"
+              >
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary">
+                Enviar invitación
+              </button>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>

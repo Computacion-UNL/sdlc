@@ -1,0 +1,16 @@
+.hidden_input_group {
+    position: relative;
+    margin-bottom: 1px;
+    button {
+        position: absolute;
+        right: 6px;
+        top: 6px;
+        padding: 5px 10px;
+        font-size: 12px;
+        text-transform: uppercase;
+    }
+}
+
+button {
+    box-shadow: none !important;
+}

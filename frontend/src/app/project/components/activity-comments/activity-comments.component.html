@@ -1,0 +1,24 @@
+<!-- add comment -->
+<ng-container *ngIf="!loading; else spinner">
+  <app-edit-activity-comment
+    [activity_id]="activity_id"
+    (added)="addComment($event)"
+    [disabled]="disabled"
+  ></app-edit-activity-comment>
+
+  <app-edit-activity-comment
+    *ngFor="let comment of comments"
+    [comment]="comment"
+    [disabled]="disabled"
+    [activity_id]="activity_id"
+    (deleted)="removeComment($event)"
+  ></app-edit-activity-comment>
+</ng-container>
+
+<ng-template #spinner>
+  <div class="d-flex justify-content-center mb-4">
+    <div class="spinner-border text-secondary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-template>

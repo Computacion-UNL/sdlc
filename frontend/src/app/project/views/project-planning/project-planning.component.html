@@ -1,0 +1,227 @@
+<div class="row align-items-center mb-3">
+  <div class="col-sm mb-2 mb-sm-0">
+    <h6 class="text-muted fst-normal mb-0">Iteraciones</h6>
+  </div>
+  <div class="col-sm-auto">
+    <button *ngIf="!disabled" class="btn btn-light" (click)="open(null)"
+      [style]="{ paddingTop: '5px', paddingBottom: '5px' }" [joyrideStep]="steps[0].step" [title]="steps[0].title"
+      [text]="steps[0].text">
+      Crear Iteración
+    </button>
+  </div>
+</div>
+
+<ng-container *ngIf="!loading_iterations; else itelist">
+  <ng-container *ngFor="let iteration of iterations; let i = index">
+    <ul class="list-group mb-5">
+      <!-- CABECERA DE LA ITERACION -->
+      <li class="list-group-item">
+        <div class="d-sm-flex gap-3 align-items-center">
+          <div class="px-2 py-1 p-sm-2 flex-grow-1 iteration_name">
+            {{ iteration.name }}
+          </div>
+          <div *ngIf="!iteration.finished" class="px-2 py-1 p-sm-2 text-muted">
+            Hasta: {{ iteration.finish_date | date: "dd/MM/yyyy":"+0000" }}
+          </div>
+          <div *ngIf="iteration.finished" class="px-2 py-1 p-sm-2 text-muted">
+            Finalizada el: {{ iteration.finished_at || iteration.finish_date | date: "dd/MM/yyyy":"+0000" }}
+          </div>
+          <button *ngIf="!iteration.finished && !disabled" class="btn btn-secondary me-2 me-sm-0" [style]="{ padding: '5px 15px' }"
+            [disabled]="iteration.started" (click)="initIteration(iteration)">
+            {{ iteration.started ? "Iniciada" : "Iniciar" }}
+          </button>
+          <button *ngIf="iteration.finished" class="btn btn-light me-2 me-sm-0" [style]="{ padding: '5px 15px' }" disabled>
+            Finalizada
+          </button>
+          <div class="btn-group">
+            <div ngbDropdown display="dynamic" placement="bottom-right">
+              <button type="button" class="btn btn-light opt_btn" ngbDropdownToggle>
+                <fa-icon [icon]="['fas', 'ellipsis-v']"></fa-icon>
+              </button>
+              <div ngbDropdownMenu class="dropdown-menu dropdown-menu-lg-end">
+                <button ngbDropdownItem *ngIf="!iteration.started && !disabled" (click)="open(iteration)">
+                  Editar
+                </button>
+                <button ngbDropdownItem *ngIf="!iteration.started && !disabled" (click)="deleteIteration(iteration)">
+                  Eliminar
+                </button>
+                <button ngbDropdownItem *ngIf="iteration.finished && can_asign_score && !disabled"
+                  (click)="assignScore(iteration)">
+                  Asignar Calificación
+                </button>
+                <button ngbDropdownItem (click)="
+                    openIterationModal(iteration?._id)
+                  " *ngIf="is_manager || iteration.finished">
+                  Ver reporte
+                </button>
+                <button ngbDropdownItem (click)="
+                  goToProcess(iteration?._id)
+                  " *ngIf="is_manager && iteration.started">
+                  Ver proceso
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+
+      <li *ngIf="!iteration.finished" class="list-group-item bg_iteration phases">
+        <div *ngIf="iteration?.objective" class="row">
+          <div class="col">
+            <div class="objective">
+              <b>Objetivo:</b> {{iteration?.objective}}
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xl-6 mb-4" *ngFor="let phase of phases">
+            <div class="phase">
+              <!-- FASE -->
+              <div class="phase_header text-muted text-small">
+                <small>{{ phase.name }}</small>
+              </div>
+              <div dndDropzone dndEffectAllowed="copyMove" class="wrap_dropzone" (dndDrop)="
+                  onDrop(
+                    $event,
+                    iteration[phase.code],
+                    iteration._id,
+                    phase.code
+                  )
+                ">
+                <div class="dnd_dropzone text-muted text-center mb-2" dndPlaceholderRef>
+                  Mover aquí
+                </div>
+                <ul *ngFor="let activity of iteration[phase.code]" class="list-group mb-2" [dndDraggable]="activity"
+                  [dndDisableIf]="iteration.started" dndEffectAllowed="move" (dndStart)="onDragStart($event)"
+                  (dndCopied)="
+                    onDragged(activity, iteration[phase.code], 'copy')
+                  " (dndLinked)="
+                    onDragged(activity, iteration[phase.code], 'link')
+                  " (dndMoved)="
+                    onDragged(activity, iteration[phase.code], 'move')
+                  " (dndCanceled)="
+                    onDragged(activity, iteration[phase.code], 'none')
+                  " (dndEnd)="onDragEnd($event)">
+                  <li class="list-group-item px-3 py-2 relative">
+                    <div class="d-flex gap-3 align-items-center">
+                      <div class="drag_icon" dndHandle *ngIf="!iteration.started">
+                        <fa-icon [icon]="['fas', 'bars']"></fa-icon>
+                      </div>
+                      <div class="flex-grow-1">
+                        <div class="d-sm-flex d-md-block d-lg-flex gap-3 align-items-center">
+                          <div class="flex-grow-1 mb-1 mb-sm-0 mb-md-1 mb-lg-0">
+                            <a class="activity_link" [routerLink]="[
+                                '/manager/project',
+                                project_id,
+                                'activity',
+                                activity._id
+                              ]">{{ activity.name }}</a>
+                          </div>
+                          <div *ngIf="activity.status">
+                            <span class="badge text-uppercase" [ngClass]="setBackground(activity.status)">
+                              {{ activity.status }}
+                            </span>
+                          </div>
+                          <!-- <div class="d-none d-sm-block rsp_pic">
+                            <fa-icon [icon]="['fas', 'users']"></fa-icon>
+                          </div> -->
+                        </div>
+                      </div>
+                    </div>
+                    <span [ngClass]="activity.created_by_manager ? 'created_manager' : 'created_collaborator'"
+                      class="created_container">
+                    </span>
+                  </li>
+                </ul>
+                <div *ngIf="iteration[phase.code]?.length === 0" class="dnd_dropzone text-muted text-center mb-2">
+                  Lista vacía
+                </div>
+              </div>
+              <button *ngIf="!iteration.started && !disabled" type="button" class="btn" (click)="
+                  openBacklog(iteration[phase.code], iteration._id, phase.code)
+                ">
+                <small class="text-muted">+ Añadir Nueva Actividad</small>
+              </button>
+            </div>
+          </div>
+        </div>
+      </li>
+      <div *ngIf="iteration.score" class="text-end text-muted">
+        <small>Calificación: {{ iteration.score }}pts.</small>
+      </div>
+    </ul>
+  </ng-container>
+</ng-container>
+
+<ng-template #itelist>
+  <div class="d-flex justify-content-center mb-4">
+    <div class="spinner-border text-secondary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+</ng-template>
+
+<div class="mb-4">
+  <app-empty *ngIf="iterations.length === 0 && !loading_iterations" title="Sin iteraciones"
+    description="No hay iteraciones creadas para este proyecto. Puedes empezar creando tus actividades en la reserva y luego organizarlas en iteraciones.">
+  </app-empty>
+</div>
+
+<div class="row align-items-center mb-3">
+  <div class="col">
+    <h6 class="text-muted fst-normal mb-0">Reserva de actividades</h6>
+  </div>
+</div>
+
+<ul class="list-group" [joyrideStep]="steps[1].step" [title]="steps[1].title" [text]="steps[1].text">
+  <li class="list-group-item bg_iteration">
+    <div dndDropzone dndEffectAllowed="copyMove" class="wrap_dropzone" (dndDrop)="onDrop($event, backlog, null, null)">
+      <div class="dnd_dropzone text-muted text-center mb-2" dndPlaceholderRef>
+        Mover aquí
+      </div>
+
+      <ul *ngFor="let activity of backlog" class="list-group mb-2" [dndDraggable]="activity" dndEffectAllowed="move"
+        (dndStart)="onDragStart($event)" (dndCopied)="onDragged(activity, backlog, 'copy')"
+        (dndLinked)="onDragged(activity, backlog, 'link')" (dndMoved)="onDragged(activity, backlog, 'move')"
+        (dndCanceled)="onDragged(activity, backlog, 'none')" (dndEnd)="onDragEnd($event)">
+        <li class="list-group-item px-3 py-2">
+          <div class="d-flex gap-3 align-items-center">
+            <div class="drag_icon">
+              <fa-icon [icon]="['fas', 'bars']"></fa-icon>
+            </div>
+            <div class="flex-grow-1">
+              <div class="d-sm-flex gap-3 align-items-center">
+                <div class="flex-grow-1 mb-1 mb-sm-0">
+                  <a class="activity_link" [routerLink]="[
+                      '/manager/project',
+                      project_id,
+                      'activity',
+                      activity._id
+                    ]">{{ activity.name }}</a>
+                </div>
+                <div *ngIf="activity.status">
+                  <span class="badge text-uppercase" [ngClass]="setBackground(activity.status)">{{ activity.status
+                    }}</span>
+                    <span [ngClass]="activity.created_by_manager ? 'created_manager' : 'created_collaborator'"
+                    class="created_container">
+                  </span>
+                </div>
+                <!-- <div class="d-none d-sm-block rsp_pic">
+                  <fa-icon [icon]="['fas', 'users']"></fa-icon>
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <div *ngIf="backlog?.length === 0" class="dnd_dropzone text-muted text-center mb-2">
+        Lista vacía
+      </div>
+    </div>
+    <div [joyrideStep]="steps[2].step" [title]="steps[2].title" [text]="steps[2].text">
+      <app-create-activity *ngIf="!disabled" [project_id]="project_id" (refresh)="addToBacklog($event)">
+      </app-create-activity>
+    </div>
+  </li>
+</ul>
