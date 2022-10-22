@@ -1,0 +1,62 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Proyecto de Trabajo de Titulación Backend",
+  "main": "bin/www",
+  "scripts": {
+    "start": "node bin/www",
+    "dev": "nodemon bin/www",
+    "test": "jest --runInBand"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/franzflores21/backend.git"
+  },
+  "author": "César Ortega, Franz Flores",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/franzflores21/backend/issues"
+  },
+  "homepage": "https://gitlab.com/franzflores21/backend#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "check-password-strength": "^2.0.4",
+    "cloudinary": "^1.28.1",
+    "connect-multiparty": "^2.2.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "html-pdf": "^3.0.1",
+    "http-errors": "^1.8.0",
+    "joi": "^17.5.0",
+    "jwt-simple": "^0.5.6",
+    "moment": "^2.29.1",
+    "mongoose": "^6.0.12",
+    "morgan": "^1.10.0",
+    "node-code-generator": "^1.0.3",
+    "nodemailer": "^6.7.2",
+    "secure-random-password": "^0.2.3",
+    "supertest": "^6.1.6"
+  },
+  "devDependencies": {
+    "babel-jest": "^27.4.4",
+    "babel-polyfill": "^6.26.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.4.1",
+    "jest": "^27.4.4",
+    "nodemon": "^2.0.14",
+    "sinon": "^12.0.1"
+  },
+  "engines": {
+    "node": "16.x"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testSequencer": "./testSequencer.js",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
+  }
+}

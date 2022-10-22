@@ -1,0 +1,14 @@
+# Dependencias
+/node_modules
+
+#Archivo package-lock
+/package-lock.json
+
+#Variables de entorno
+/.env
+
+#Carpeta de Imágenes
+/uploads
+
+#Carpeta de reportes
+/reports
